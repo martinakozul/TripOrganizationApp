@@ -1,6 +1,11 @@
 package com.camunda.triporganization.ui.components.forms
 
 import CustomDropdownMenu
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.camunda.triporganization.R
 import com.camunda.triporganization.ui.components.CustomTopBar
+import com.camunda.triporganization.ui.components.SubmitLoader
 
 @Composable
 fun AssignGuideScreen(
@@ -36,6 +43,8 @@ fun AssignGuideScreen(
     onBackPressed: () -> Unit
 ) {
     var guide by remember { mutableStateOf<String?>(null) }
+
+    var showLoader by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -54,10 +63,10 @@ fun AssignGuideScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .shadow(2.dp, shape = RoundedCornerShape(4.dp))
+                    .shadow(2.dp, shape = RoundedCornerShape(8.dp))
                     .background(
                         MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(4.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
                     .padding(16.dp)
             )
@@ -65,6 +74,7 @@ fun AssignGuideScreen(
             Button(
                 enabled = guide != null,
                 onClick = {
+                    showLoader = true
                     assignGuide(guide ?: "")
                 }
             ) {
@@ -72,6 +82,17 @@ fun AssignGuideScreen(
                     text = "Assign guide"
                 )
             }
+        }
+
+        AnimatedVisibility(
+            visible = showLoader,
+            enter = fadeIn() + scaleIn(),
+            exit = fadeOut() + scaleOut()
+        ) {
+            SubmitLoader(
+                lottieRes = R.raw.suitcase_lottie,
+                text = "Guide assigned! Hang on tight while they define trip itinerary"
+            )
         }
     }
 }

@@ -7,7 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -29,6 +34,7 @@ import com.camunda.triporganization.viewmodel.PartnerOfferReviewViewModel
 import com.camunda.triporganization.viewmodel.TripCreateViewModel
 import com.camunda.triporganization.viewmodel.TripItineraryViewModel
 import com.camunda.triporganization.viewmodel.TripTilesListViewModel
+import kotlinx.coroutines.delay
 
 sealed class NavigationScreen(val route: String) {
     object LogIn : NavigationScreen("log_in")
@@ -140,7 +146,7 @@ fun TripCreationForm(onBackPressed: () -> Unit, tripId: Long) {
     viewModel.fetchTripDetails(tripId)
     val trip = viewModel.tripDetails.collectAsState()
     TripCreationForm(
-        trip = trip.value,
+        tripWrapper = trip.value,
         tripId = tripId,
         onSaveChanges = {
             viewModel.saveTripDetails(it)
@@ -155,19 +161,14 @@ fun TripCreationForm(onBackPressed: () -> Unit, tripId: Long) {
 @Composable
 fun TripItineraryForm(tripId: Long, onBackPressed: () -> Unit) {
     val viewModel: TripItineraryViewModel = viewModel()
-
-    viewModel.fetchTripItinerary(tripId)
-    viewModel.fetchTripInformation(tripId)
-
-    val tripItinerary = viewModel.tripItinerary.collectAsState()
-    val citiesWithDays = viewModel.citiesWithDays.collectAsState()
+    viewModel.fetchTripData(tripId)
+    val tripItinerary = viewModel.tripInformation.collectAsState()
 
     TripPlanForm(
-        tripItinerary = tripItinerary.value,
+        trip = tripItinerary.value,
         onSubmitClicked = { plan ->
             viewModel.submitTripItinerary(tripId, plan)
         },
-        cities = citiesWithDays.value,
         onBackPressed = onBackPressed
     )
 }
@@ -175,12 +176,12 @@ fun TripItineraryForm(tripId: Long, onBackPressed: () -> Unit) {
 @Composable
 fun TripItineraryReview(tripId: Long, onBackPressed: () -> Unit) {
     val viewModel: ItineraryReviewViewModel = viewModel()
-    val tripItinerary = viewModel.tripItinerary.collectAsState()
+    val trip = viewModel.tripItinerary.collectAsState()
 
     viewModel.fetchTripItinerary(tripId)
 
     TripPlanReviewForm(
-        tripItinerary.value,
+        trip.value,
         onPublishClicked = { viewModel.submitReview(tripId, it, null) },
         onRejectClicked = { viewModel.submitReview(tripId, null, it) },
         onBackPressed = onBackPressed
@@ -212,16 +213,18 @@ fun PartnerOffersReview(
 ) {
     val viewModel: PartnerOfferReviewViewModel = viewModel()
     val offers = viewModel.offers.collectAsState()
+    var delay by remember { mutableStateOf(false) }
 
     viewModel.getOffers(tripId)
 
     Scaffold { paddingValues ->
         PartnerOfferReviewScreen(
-            transportOffers = offers.value?.transport ?: emptyList(),
-            accommodationOffers = offers.value?.accommodation ?: emptyList(),
+            trip = offers.value?.trip,
+            transportOffers = offers.value?.groupedPartnerOffers?.transport ?: emptyMap(),
+            accommodationOffers = offers.value?.groupedPartnerOffers?.accommodation ?: emptyMap(),
             onOffersAccepted = { transportOffer, accommodationOffer ->
                 viewModel.acceptOffers(tripId, transportOffer, accommodationOffer)
-                onNavigateToAssignGuideForm()
+                delay = true
             },
             onOffersRejected = {
                 viewModel.rejectAllOffers(tripId)
@@ -231,6 +234,13 @@ fun PartnerOffersReview(
                 .fillMaxSize()
                 .padding(bottom = paddingValues.calculateBottomPadding())
         )
+    }
+
+    LaunchedEffect(delay) {
+        if (delay) {
+            delay(5000L)
+            onNavigateToAssignGuideForm()
+        }
     }
 
 }

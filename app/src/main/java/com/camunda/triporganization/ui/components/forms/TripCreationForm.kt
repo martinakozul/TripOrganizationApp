@@ -1,6 +1,11 @@
 package com.camunda.triporganization.ui.components.forms
 
 import CustomDropdownMenu
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,27 +39,34 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.camunda.triporganization.R
 import com.camunda.triporganization.helper.DateHelper
+import com.camunda.triporganization.model.CitiesData
 import com.camunda.triporganization.model.TransportationType
 import com.camunda.triporganization.model.Trip
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.DateRangePickerModal
+import com.camunda.triporganization.ui.components.SubmitLoader
+import com.camunda.triporganization.viewmodel.TripWrapper
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TripCreationForm(
-    trip: Trip?,
+    tripWrapper: TripWrapper?,
     tripId: Long,
     onCreateTrip: (Trip) -> Unit,
     onSaveChanges: (Trip) -> Unit,
     onBackPressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val trip = tripWrapper?.trip
+
+    var showLoader by remember { mutableStateOf(false) }
 
     var name by remember { mutableStateOf(trip?.tripName ?: "") }
 
-    val cities = remember { mutableStateListOf<String>() }
+    val cities = remember { mutableStateListOf<CitiesData>() }
 
     var minTravelers by remember { mutableIntStateOf(trip?.minTravelers ?: 0) }
     var maxTravelers by remember { mutableIntStateOf(trip?.maxTravelers ?: 0) }
@@ -83,10 +95,10 @@ fun TripCreationForm(
             Column(
                 modifier = Modifier
                     .padding(8.dp)
-                    .shadow(2.dp, shape = RoundedCornerShape(4.dp))
+                    .shadow(2.dp, shape = RoundedCornerShape(8.dp))
                     .background(
                         MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(4.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -107,7 +119,7 @@ fun TripCreationForm(
                     ) {
                         cities.forEachIndexed { index, city ->
                             Text(
-                                text = city,
+                                text = city.cityName,
                                 modifier = Modifier.combinedClickable(
                                     onClick = { showDaysInputDialog = index },
                                     onLongClick = {
@@ -122,17 +134,18 @@ fun TripCreationForm(
                         }
                         CustomDropdownMenu(
                             label = "Add city",
-                            menuItemData = listOf(
-                                "Rome",
-                                "Paris",
-                                "London",
-                                "Barcelona",
-                                "Dubrovnik",
-                                "Ljubljana",
-                                "Zagreb"
-                            ),
-                            onItemSelected = {
-                                cities.add(it)
+                            menuItemData = tripWrapper?.cities?.map { it.name } ?: listOf(),
+                            onItemSelected = { name ->
+                                tripWrapper?.cities?.firstOrNull { it.name == name }?.let {
+                                    cities.add(
+                                        CitiesData(
+                                            cityId = it.id,
+                                            cityName = it.name,
+                                            daysSpent = 0,
+                                            order = cities.lastIndex + 1
+                                        )
+                                    )
+                                }
                             }
                         )
                     }
@@ -190,11 +203,7 @@ fun TripCreationForm(
 
                     Text(
                         style = MaterialTheme.typography.labelMedium,
-                        text = "Minimum trip length: ${
-                            cities.mapNotNull { str ->
-                                Regex("\\((\\d+)").find(str)?.groupValues?.get(1)?.toIntOrNull()
-                            }.sum()
-                        } days"
+                        text = "Minimum trip length: ${cities.sumOf { it.daysSpent }} days"
                     )
                 }
 
@@ -236,7 +245,7 @@ fun TripCreationForm(
                         Trip(
                             id = tripId,
                             tripName = name,
-                            cities = cities.joinToString(" - "),
+                            cities = cities,
                             minTravelers = minTravelers,
                             maxTravelers = maxTravelers,
                             transportation = transportationType,
@@ -255,7 +264,7 @@ fun TripCreationForm(
                         Trip(
                             id = tripId,
                             tripName = name,
-                            cities = cities.joinToString(" - "),
+                            cities = cities,
                             minTravelers = minTravelers,
                             maxTravelers = maxTravelers,
                             transportation = transportationType,
@@ -271,20 +280,29 @@ fun TripCreationForm(
 
         showDaysInputDialog?.let { i ->
             DaysCityDialog(
-                cityName = cities[i],
+                cityName = cities[i].cityName,
                 onDaysEntered = { days ->
-                    cities[i] = cities[i] + " ($days) "
+                    cities[i] = cities[i].copy(daysSpent = days)
                     showDaysInputDialog = null
                 },
                 onDismiss = { showDaysInputDialog = null }
             )
         }
+
+        AnimatedVisibility(
+            visible = showLoader,
+            enter = fadeIn() + scaleIn(),
+            exit = fadeOut() + scaleOut()
+        ) {
+            SubmitLoader(
+                lottieRes = R.raw.suitcase_lottie,
+                text = "Trip created! Hang on tight while we contact partners"
+            )
+        }
     }
 
     LaunchedEffect(tripDate, name, transportationType, cities, minTravelers, maxTravelers) {
-        tripLength = cities.mapNotNull { str ->
-            Regex("\\((\\d+)").find(str)?.groupValues?.get(1)?.toIntOrNull()
-        }.sum()
+        tripLength = cities.sumOf { it.daysSpent }
         if (tripDate != null) {
             val daysBetween = TimeUnit.MILLISECONDS.toDays(tripDate!!.second - tripDate!!.first)
             createEnabled = if ((daysBetween.toInt() + 1) != tripLength) {
@@ -293,7 +311,6 @@ fun TripCreationForm(
                 name.isNotEmpty() &&
                         transportationType != null &&
                         cities.isNotEmpty() &&
-                        cities.all { it.contains("(") } &&
                         minTravelers > 0 &&
                         maxTravelers >= minTravelers &&
                         tripDate != null
@@ -302,7 +319,6 @@ fun TripCreationForm(
             createEnabled = name.isNotEmpty() &&
                     transportationType != null &&
                     cities.isNotEmpty() &&
-                    cities.all { it.contains("(") } &&
                     minTravelers > 0 &&
                     maxTravelers >= minTravelers &&
                     tripDate != null
@@ -314,7 +330,10 @@ fun TripCreationForm(
 @Composable
 private fun TripCreationFormPreview() {
     TripCreationForm(
-        trip = null,
+        tripWrapper = TripWrapper(
+            null,
+            listOf()
+        ),
         tripId = 1,
         onCreateTrip = {},
         onSaveChanges = {},

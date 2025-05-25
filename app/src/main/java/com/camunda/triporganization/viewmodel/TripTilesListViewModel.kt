@@ -3,10 +3,8 @@ package com.camunda.triporganization.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.camunda.triporganization.database.DatabaseProvider
 import com.camunda.triporganization.helper.AppSingleton
 import com.camunda.triporganization.model.BasicTaskItem
-import com.camunda.triporganization.model.Trip
 import com.camunda.triporganization.network.Network
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

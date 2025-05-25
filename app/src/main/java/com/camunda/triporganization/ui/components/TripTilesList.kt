@@ -48,7 +48,7 @@ fun TripTilesList(
                         .clickable { onAction.invoke(TripListAction.CreateFormAction(null)) }
                         .background(
                             MaterialTheme.colorScheme.secondary,
-                            shape = RoundedCornerShape(4.dp)
+                            shape = RoundedCornerShape(8.dp)
                         )
                         .padding(horizontal = 12.dp, vertical = 8.dp)
                 ) {
@@ -73,7 +73,7 @@ fun TripTilesList(
                             modifier = Modifier
                                 .background(
                                     if (selectedType == type) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
-                                    shape = RoundedCornerShape(4.dp)
+                                    shape = RoundedCornerShape(8.dp)
                                 )
                                 .padding(vertical = 4.dp, horizontal = 8.dp)
                                 .clickable {

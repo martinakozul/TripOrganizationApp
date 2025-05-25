@@ -19,7 +19,8 @@ fun CustomCheckbox(
     label: String,
     isChecked: Boolean,
     onCheckedChanged: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
 
 
@@ -28,6 +29,7 @@ fun CustomCheckbox(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Checkbox(
+            enabled = enabled,
             checked = isChecked,
             onCheckedChange = {
                 onCheckedChanged()

@@ -3,24 +3,32 @@ package com.camunda.triporganization.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.camunda.triporganization.database.DatabaseProvider
+import com.camunda.triporganization.model.CityResponse
 import com.camunda.triporganization.model.Trip
 import com.camunda.triporganization.network.Network
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class TripCreateViewModel(application: Application): AndroidViewModel(application) {
+class TripCreateViewModel(application: Application) : AndroidViewModel(application) {
 
     val service = Network.tripService
 
-    private val _tripDetails = MutableStateFlow<Trip?>(null)
+    private val _tripDetails = MutableStateFlow<TripWrapper?>(null)
     val tripDetails = _tripDetails.asStateFlow()
+
 
     fun fetchTripDetails(id: Long) {
         viewModelScope.launch {
-            _tripDetails.update { service.getTripInformation(id).body() }
+            val citiesAsync = async { service.getCities() }
+            _tripDetails.update {
+                TripWrapper(
+                    null,
+                    citiesAsync.await()
+                )
+            }
         }
     }
 
@@ -35,6 +43,9 @@ class TripCreateViewModel(application: Application): AndroidViewModel(applicatio
             service.fillTripCreationData(processKey = trip.id, tripRequest = trip)
         }
     }
-
-
 }
+
+data class TripWrapper(
+    val trip: Trip?,
+    val cities: List<CityResponse>
+)

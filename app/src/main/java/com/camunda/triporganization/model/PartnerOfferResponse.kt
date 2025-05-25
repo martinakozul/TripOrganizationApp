@@ -10,8 +10,11 @@ data class PartnerOfferResponse(
 
 @Serializable
 data class PartnerOfferItem(
+    val id: Long,
     val partnerId: Long,
     val processKey: Long,
     val partnerName: String,
-    val pricePerPerson: Int
+    val pricePerPerson: Int,
+    val cityId: Long,
+    val cityName: String
 )

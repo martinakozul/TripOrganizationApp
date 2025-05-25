@@ -43,7 +43,7 @@ fun TripTile(trip: Trip, modifier: Modifier = Modifier) {
 //            contentScale = ContentScale.FillBounds,
 //            modifier = Modifier
 //                .size(width = 48.dp, height = 28.dp)
-//                .clip(RoundedCornerShape(4.dp))
+//                .clip(RoundedCornerShape(8.dp))
 //        )
 
         Text(

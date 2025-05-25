@@ -1,6 +1,8 @@
 package com.camunda.triporganization.network
 
 import com.camunda.triporganization.model.BasicTaskItem
+import com.camunda.triporganization.model.CitiesData
+import com.camunda.triporganization.model.CityResponse
 import com.camunda.triporganization.model.PartnerOfferResponse
 import com.camunda.triporganization.model.Trip
 import com.camunda.triporganization.model.TripItinerary
@@ -36,7 +38,7 @@ interface TripService {
     suspend fun getOffersForTrip(@Path("processKey") processKey: Long): PartnerOfferResponse
 
     @POST("/offer/trip/{processKey}/accept")
-    suspend fun acceptOffersForTrip(@Path("processKey") processKey: Long, @Query("transportPartnerId") transportPartnerId: Long, @Query("accommodationPartnerId") accommodationPartnerId: Long)
+    suspend fun acceptOffersForTrip(@Path("processKey") processKey: Long, @Query("transportPartnerIds") transportPartnerId: List<Long>, @Query("accommodationPartnerIds") accommodationPartnerId: List<Long>)
 
     @POST("/offer/trip/{processKey}/rejectAll")
     suspend fun rejectOffersForTrip(@Path("processKey") processKey: Long)
@@ -54,6 +56,9 @@ interface TripService {
     suspend fun reviewTripItinerary(@Path("processKey") processKey: Long, @Query("price") price: Double?, @Query("note") note: String?)
 
     @POST("/trip/{processInstanceKey}/fillTripPlan")
-    suspend fun fillTripItinerary(@Path("processInstanceKey") processKey: Long, @Body tripRequest: TripItinerary)
+    suspend fun fillTripItinerary(@Path("processInstanceKey") processKey: Long, @Body tripItinerary: List<CitiesData>)
+
+    @GET("/city/all")
+    suspend fun getCities(): List<CityResponse>
 
 }

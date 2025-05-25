@@ -18,7 +18,8 @@ object DateHelper {
         return "help"
     }
 
-    fun convertMillisToDate(millis: Long): String {
+    fun convertMillisToDate(millis: Long?): String {
+        if (millis == null) return ""
         val formatter = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
         return formatter.format(Date(millis))
     }

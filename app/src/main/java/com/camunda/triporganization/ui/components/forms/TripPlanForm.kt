@@ -1,5 +1,11 @@
 package com.camunda.triporganization.ui.components.forms
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +31,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,21 +39,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.camunda.triporganization.model.TripItinerary
+import com.camunda.triporganization.R
+import com.camunda.triporganization.model.CitiesData
+import com.camunda.triporganization.model.TransportationType
+import com.camunda.triporganization.model.Trip
 import com.camunda.triporganization.ui.components.CustomTopBar
+import com.camunda.triporganization.ui.components.SubmitLoader
 
 @Composable
 fun TripPlanForm(
-    tripItinerary: TripItinerary?,
-    cities: List<Pair<String, Int>>,
-    onSubmitClicked: (TripItinerary) -> Unit,
+    trip: Trip?,
+    onSubmitClicked: (List<CitiesData>) -> Unit,
     onBackPressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (cities.isEmpty()) return
+    if (trip == null) return
 
-    val tripPlan =
-        remember { mutableStateListOf(*Array(cities.sumOf { it.second } + cities.size) { "" }) }
+    val cities = trip.cities.sortedBy { it.order }
+
+    var tripPlan by remember {
+        mutableStateOf<List<List<String>>>(
+            cities.map { item ->
+                val parts = item.plan.split(";")
+                val count = if (item.daysSpent == 0) 1 else item.daysSpent
+                List(count) { parts }.flatten()
+            }
+        )
+    }
+    var showLoader by remember { mutableStateOf(false) }
+
     var includedActivities by remember { mutableStateOf<List<TripActivity>>(listOf()) }
     var extraActivities by remember { mutableStateOf<List<TripActivity>>(listOf()) }
 
@@ -60,14 +79,17 @@ fun TripPlanForm(
         }
     ) { innerPadding ->
         Column(
-            modifier = modifier.padding(innerPadding).fillMaxSize().padding(16.dp)
+            modifier = modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
             LazyColumn(
                 modifier = Modifier
-                    .shadow(2.dp, shape = RoundedCornerShape(4.dp))
+                    .shadow(2.dp, shape = RoundedCornerShape(8.dp))
                     .background(
                         MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(4.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
                     .padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -75,22 +97,32 @@ fun TripPlanForm(
                 contentPadding = PaddingValues(8.dp)
             ) {
 
-                items(cities.size) { index ->
-                    val cityPair = cities[index]
-                    (0 until cityPair.second.coerceAtLeast(1)).forEach { i ->
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            val tripDay = cities.take(index).sumOf { it.second } + index + i + 1
-                            Text(text = "${cityPair.first} (Day $tripDay)")
-                            OutlinedTextField(
-                                value = tripPlan[tripDay - 1],
-                                minLines = 5,
-                                onValueChange = { tripPlan[tripDay - 1] = it },
-                                label = { Text("Itinerary") },
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
+                items(cities) { city ->
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = city.cityName + " (${city.daysSpent} nights)"
+                    )
+
+                    repeat(city.daysSpent.coerceAtLeast(1)) { i ->
+                        Log.e("MARIN", "${city.cityName} $i ${tripPlan[city.order - 1]}")
+                        OutlinedTextField(
+                            value = tripPlan[city.order - 1][(i).coerceAtLeast(0)],
+                            minLines = 5,
+                            onValueChange = { newPlan ->
+                                tripPlan = tripPlan.mapIndexed { outerIndex, dayPlans ->
+                                    if (outerIndex == city.order - 1) {
+                                        dayPlans.mapIndexed { innerIndex, plan ->
+                                            if (innerIndex == i) newPlan else plan
+                                        }
+                                    } else {
+                                        dayPlans
+                                    }
+                                }
+                            },
+                            label = { Text("Itinerary") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
                 }
 
@@ -190,15 +222,16 @@ fun TripPlanForm(
 
                 item {
                     Button(
-                        enabled = tripPlan.all { it.isNotEmpty() },
                         onClick = {
+                            showLoader = true
                             onSubmitClicked(
-                                TripItinerary(
-                                    tripPlan = tripPlan.mapIndexed {i, plan -> "Day $i\n$plan" },
-                                    includedActivities = includedActivities.map { "${it.name} (€${it.price})" },
-                                    extraActivities = extraActivities.map { "${it.name} (€${it.price})" },
-                                    note = ""
-                                )
+                                cities.map { city ->
+                                    city.copy(
+                                        plan = tripPlan[city.order - 1].joinToString(";"),
+                                        includedActivities = includedActivities.map { "${it.name} (€${it.price})" },
+                                        extraActivities = extraActivities.map { "${it.name} (€${it.price})" }
+                                    )
+                                }
                             )
                         }
                     ) {
@@ -207,6 +240,17 @@ fun TripPlanForm(
                 }
             }
         }
+
+        AnimatedVisibility(
+            visible = showLoader,
+            enter = fadeIn() + scaleIn(),
+            exit = fadeOut() + scaleOut()
+        ) {
+            SubmitLoader(
+                lottieRes = R.raw.suitcase_lottie,
+                text = "Submitting the itinerary suggestion"
+            )
+        }
     }
 }
 
@@ -214,9 +258,38 @@ fun TripPlanForm(
 @Composable
 private fun TripPlanFormPreview() {
     TripPlanForm(
-        tripItinerary = null,
+        trip = Trip(
+            id = 1,
+            tripName = "Name",
+            cities = listOf(
+                CitiesData(
+                    cityId = 5,
+                    cityName = "Barcelona",
+                    daysSpent = 2,
+                    order = 2,
+                ),
+                CitiesData(
+                    cityId = 4,
+                    cityName = "Paris",
+                    daysSpent = 2,
+                    order = 1,
+                ),
+                CitiesData(
+                    cityId = 7,
+                    cityName = "Zagreb",
+                    daysSpent = 0,
+                    order = 3,
+                ),
+            ),
+            minTravelers = 10,
+            maxTravelers = 20,
+            transportation = TransportationType.BUS,
+            tripStartDate = System.currentTimeMillis(),
+            tripEndDate = System.currentTimeMillis(),
+            price = null,
+            coordinatorId = 1
+        ),
         onSubmitClicked = {},
-        cities = listOf(Pair("Rome", 0), Pair("Paris", 2), Pair("Barcelona", 4)),
         onBackPressed = {}
     )
 }

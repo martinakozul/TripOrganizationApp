@@ -1,6 +1,10 @@
 package com.camunda.triporganization.ui.components.forms
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,22 +33,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.camunda.triporganization.model.TripItinerary
+import com.camunda.triporganization.R
+import com.camunda.triporganization.helper.AppSingleton
+import com.camunda.triporganization.model.CitiesData
+import com.camunda.triporganization.model.TransportationType
+import com.camunda.triporganization.model.Trip
 import com.camunda.triporganization.ui.components.CustomCheckbox
 import com.camunda.triporganization.ui.components.CustomTopBar
+import com.camunda.triporganization.ui.components.SubmitLoader
+import com.camunda.triporganization.ui.components.TripInformationCollapsible
 
 @Composable
 fun TripPlanReviewForm(
-    tripItinerary: TripItinerary?,
+    trip: Trip?,
     onPublishClicked: (Double) -> Unit,
     onRejectClicked: (String) -> Unit,
     onBackPressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (tripItinerary == null) return
+    if (trip == null) return
 
     var note by remember { mutableStateOf("") }
     var price by remember { mutableStateOf<Double?>(null) }
@@ -52,7 +63,7 @@ fun TripPlanReviewForm(
 
     var showTripInfo by remember { mutableStateOf(false) }
     var showTripItinerary by remember { mutableStateOf(true) }
-
+    var showLoader by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -68,35 +79,22 @@ fun TripPlanReviewForm(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            TripInformationCollapsible(trip = trip)
+
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
                     .shadow(
                         2.dp,
-                        shape = RoundedCornerShape(4.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
                     .background(
                         MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(4.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Trip Information")
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                            .size(24.dp),
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = null
-                    )
-                }
-
                 Row(
                     modifier = Modifier.clickable {
                         showTripItinerary = !showTripItinerary
@@ -120,7 +118,7 @@ fun TripPlanReviewForm(
                     ) {
                         Text(
                             style = MaterialTheme.typography.bodyMedium,
-                            text = tripItinerary.tripPlan.joinToString("\n")
+                            text = trip.cities.joinToString("\n") { it.plan }
                         )
                         Text(
                             style = MaterialTheme.typography.labelLarge,
@@ -128,7 +126,7 @@ fun TripPlanReviewForm(
                         )
                         Text(
                             style = MaterialTheme.typography.bodyMedium,
-                            text = tripItinerary.includedActivities.joinToString("\n")
+                            text = trip.cities.map { it.includedActivities }.joinToString("\n")
                         )
                         Text(
                             style = MaterialTheme.typography.labelLarge,
@@ -136,7 +134,7 @@ fun TripPlanReviewForm(
                         )
                         Text(
                             style = MaterialTheme.typography.bodyMedium,
-                            text = tripItinerary.extraActivities.joinToString("\n")
+                            text = trip.cities.map { it.extraActivities }.joinToString("\n")
                         )
                     }
                 }
@@ -148,17 +146,17 @@ fun TripPlanReviewForm(
                     .padding(8.dp)
                     .shadow(
                         2.dp,
-                        shape = RoundedCornerShape(4.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
                     .background(
                         MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(4.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OutlinedTextField(
-                    enabled = isApproved.not(),
+                    enabled = isApproved.not() && showLoader.not(),
                     value = if (isApproved) "" else note,
                     minLines = 5,
                     onValueChange = { note = it },
@@ -167,6 +165,7 @@ fun TripPlanReviewForm(
                 )
 
                 CustomCheckbox(
+                    enabled = showLoader.not(),
                     onCheckedChanged = {
                         isApproved = !isApproved
                     },
@@ -176,6 +175,7 @@ fun TripPlanReviewForm(
 
                 if (isApproved) {
                     OutlinedTextField(
+                        enabled = showLoader.not(),
                         value = (price ?: "").toString(),
                         onValueChange = { price = it.toDoubleOrNull() ?: 0.0 },
                         label = { Text("Price per person") },
@@ -187,6 +187,7 @@ fun TripPlanReviewForm(
             Button(
                 onClick = {
                     if (isApproved) onPublishClicked(price ?: 100.0) else onRejectClicked(note)
+                    showLoader = true
                 },
                 enabled = (!isApproved && note.isNotEmpty()) || (price != null && isApproved)
             ) {
@@ -194,6 +195,16 @@ fun TripPlanReviewForm(
                     text = if (isApproved) "Publish trip" else "Send back to guide"
                 )
             }
+        }
+        AnimatedVisibility(
+            visible = showLoader,
+            enter = fadeIn() + scaleIn(),
+            exit = fadeOut() + scaleOut()
+        ) {
+            SubmitLoader(
+                lottieRes = R.raw.suitcase_lottie,
+                text = if (isApproved) "All set! Sit back and relax while the trip is being published" else "Letting the guide know..."
+            )
         }
     }
 }
@@ -204,37 +215,36 @@ private fun TripPlanReviewFormPreview() {
     TripPlanReviewForm(
         onRejectClicked = {},
         onPublishClicked = {},
-        tripItinerary = TripItinerary(
-            tripPlan = listOf(
-                    "Day 1 - Zagreb  \n" +
-                    "Meet up at xxh, head to the airport, fly to Rome.  \n" +
-                    "Check into accommodation and take an evening stroll near the Colosseum.  \n" +
-                    "Dinner at a cozy trattoria in Monti.\n\n",
-                    "Day 2 - Ancient Rome  \n" +
-                    "Morning visit to the Colosseum and Roman Forum.  \n" +
-                    "Lunch near Piazza Venezia.  \n" +
-                    "Afternoon visit to Palatine Hill.  \n" +
-                    "Sunset walk around Capitoline Hill.  \n" +
-                    "Dinner in Trastevere.\n\n",
-                    "Day 3 - Vatican City  \n" +
-                    "Visit St. Peter’s Basilica early to beat the crowds.  \n" +
-                    "Tour the Vatican Museums and Sistine Chapel.  \n" +
-                    "Picnic lunch in the Vatican Gardens (if available) or nearby café.  \n" +
-                    "Explore Castel Sant’Angelo in the evening.  \n" +
-                    "Dinner along the Tiber River.\n\n",
-                    "Day 4 - Baroque Rome & Hidden Gems  \n" +
-                    "Walk through Piazza Navona and visit the Pantheon.  \n" +
-                    "Espresso break at Sant’Eustachio Il Caffè.  \n" +
-                    "Explore Campo de' Fiori and shop for souvenirs.  \n" +
-                    "Afternoon visit to Villa Borghese & Galleria Borghese.  \n" +
-                    "Dinner in the Jewish Ghetto.\n\n",
-                    "Day 5 - Farewell Rome  \n" +
-                    "Relaxed breakfast near the Spanish Steps.  \n" +
-                    "Free time for last-minute exploring or shopping.  \n" +
-                    "Lunch, then head to the airport for flight back to Zagreb.\n"),
-            includedActivities = listOf("one", "two", "three"),
-            extraActivities = listOf(),
-            note = "Looks great but fix day 2"
+        trip = Trip(
+            id = 1,
+            tripName = "test trip",
+            cities = listOf(
+                CitiesData(
+                    cityId = 1,
+                    cityName = "lala",
+                    daysSpent = 2,
+                    order = 1,
+                    plan = "dflp\nkjsdka\najsdkajsd",
+                    includedActivities = emptyList(),
+                    extraActivities = emptyList()
+                ),
+                CitiesData(
+                    cityId = 1,
+                    cityName = "sd",
+                    daysSpent = 2,
+                    order = 2,
+                    plan = "dflp\nkjsdka\najsdkajsd",
+                    includedActivities = emptyList(),
+                    extraActivities = emptyList()
+                ),
+            ),
+            minTravelers = 10,
+            maxTravelers = 20,
+            transportation = TransportationType.PLANE,
+            tripStartDate = System.currentTimeMillis(),
+            tripEndDate = System.currentTimeMillis(),
+            price = null,
+            coordinatorId = AppSingleton.userId
         ),
         onBackPressed = {}
     )

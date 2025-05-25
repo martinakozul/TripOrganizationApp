@@ -32,10 +32,10 @@ fun LogInForm(
 
     Column(
         modifier = modifier
-            .shadow(2.dp,  shape = RoundedCornerShape(4.dp))
+            .shadow(2.dp,  shape = RoundedCornerShape(8.dp))
             .background(
                 MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
