@@ -11,8 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class TripTilesListViewModel(application: Application) : AndroidViewModel(application) {
-
+class TripTilesListViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     val service = Network.tripService
 
     private val _processes = MutableStateFlow<List<BasicTaskItem>?>(emptyList())

@@ -50,7 +50,7 @@ fun TripPlanForm(
     trip: Trip?,
     onSubmitClicked: (List<CitiesData>) -> Unit,
     onBackPressed: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (trip == null) return
 
@@ -62,7 +62,7 @@ fun TripPlanForm(
                 val parts = item.plan.split(";")
                 val count = if (item.daysSpent == 0) 1 else item.daysSpent
                 List(count) { parts }.flatten()
-            }
+            },
         )
     }
     var showLoader by remember { mutableStateOf(false) }
@@ -75,32 +75,32 @@ fun TripPlanForm(
     Scaffold(
         topBar = {
             CustomTopBar(title = "Assign a guide", onBackPressed = onBackPressed)
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(16.dp)
+            modifier =
+                modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(16.dp),
         ) {
             LazyColumn(
-                modifier = Modifier
-                    .shadow(2.dp, shape = RoundedCornerShape(8.dp))
-                    .background(
-                       primaryContainer,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(horizontal = 8.dp),
+                modifier =
+                    Modifier
+                        .shadow(2.dp, shape = RoundedCornerShape(8.dp))
+                        .background(
+                            primaryContainer,
+                            shape = RoundedCornerShape(8.dp),
+                        ).padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                contentPadding = PaddingValues(8.dp)
+                contentPadding = PaddingValues(8.dp),
             ) {
-
                 items(cities) { city ->
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = city.cityName + " (${city.daysSpent} nights)"
+                        text = city.cityName + " (${city.daysSpent} nights)",
                     )
 
                     repeat(city.daysSpent.coerceAtLeast(1)) { i ->
@@ -108,18 +108,19 @@ fun TripPlanForm(
                             value = tripPlan[city.order - 1][(i).coerceAtLeast(0)],
                             minLines = 5,
                             onValueChange = { newPlan ->
-                                tripPlan = tripPlan.mapIndexed { outerIndex, dayPlans ->
-                                    if (outerIndex == city.order - 1) {
-                                        dayPlans.mapIndexed { innerIndex, plan ->
-                                            if (innerIndex == i) newPlan else plan
+                                tripPlan =
+                                    tripPlan.mapIndexed { outerIndex, dayPlans ->
+                                        if (outerIndex == city.order - 1) {
+                                            dayPlans.mapIndexed { innerIndex, plan ->
+                                                if (innerIndex == i) newPlan else plan
+                                            }
+                                        } else {
+                                            dayPlans
                                         }
-                                    } else {
-                                        dayPlans
                                     }
-                                }
                             },
                             label = { Text("Itinerary") },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
                         )
                     }
                 }
@@ -127,17 +128,19 @@ fun TripPlanForm(
                 item {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { showAddActivity = true }
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable { showAddActivity = true },
                     ) {
                         Text(text = "Add activity")
                         Icon(
-                            modifier = Modifier
-                                .padding(start = 4.dp)
-                                .size(16.dp),
+                            modifier =
+                                Modifier
+                                    .padding(start = 4.dp)
+                                    .size(16.dp),
                             imageVector = Icons.Default.Add,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 }
@@ -149,22 +152,24 @@ fun TripPlanForm(
                 items(includedActivities) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(text = it.name + "€${it.price}")
                         Icon(
-                            modifier = Modifier
-                                .padding(start = 4.dp)
-                                .size(16.dp),
+                            modifier =
+                                Modifier
+                                    .padding(start = 4.dp)
+                                    .size(16.dp),
                             imageVector = Icons.Default.Clear,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                         Icon(
-                            modifier = Modifier
-                                .padding(start = 4.dp)
-                                .size(16.dp),
+                            modifier =
+                                Modifier
+                                    .padding(start = 4.dp)
+                                    .size(16.dp),
                             imageVector = Icons.Default.Create,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 }
@@ -172,29 +177,31 @@ fun TripPlanForm(
                 item {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Extra activities:"
+                        text = "Extra activities:",
                     )
                 }
 
                 items(extraActivities) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(text = it.name + "€${it.price}")
                         Icon(
-                            modifier = Modifier
-                                .padding(start = 4.dp)
-                                .size(16.dp),
+                            modifier =
+                                Modifier
+                                    .padding(start = 4.dp)
+                                    .size(16.dp),
                             imageVector = Icons.Default.Clear,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                         Icon(
-                            modifier = Modifier
-                                .padding(start = 4.dp)
-                                .size(16.dp),
+                            modifier =
+                                Modifier
+                                    .padding(start = 4.dp)
+                                    .size(16.dp),
                             imageVector = Icons.Default.Create,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 }
@@ -213,7 +220,7 @@ fun TripPlanForm(
                             },
                             onDismiss = {
                                 showAddActivity = false
-                            }
+                            },
                         )
                     }
                 }
@@ -227,11 +234,11 @@ fun TripPlanForm(
                                     city.copy(
                                         plan = tripPlan[city.order - 1].joinToString(";"),
                                         includedActivities = includedActivities.map { "${it.name} (€${it.price})" },
-                                        extraActivities = extraActivities.map { "${it.name} (€${it.price})" }
+                                        extraActivities = extraActivities.map { "${it.name} (€${it.price})" },
                                     )
-                                }
+                                },
                             )
-                        }
+                        },
                     ) {
                         Text("Submit itinerary")
                     }
@@ -242,11 +249,11 @@ fun TripPlanForm(
         AnimatedVisibility(
             visible = showLoader,
             enter = fadeIn() + scaleIn(),
-            exit = fadeOut() + scaleOut()
+            exit = fadeOut() + scaleOut(),
         ) {
             SubmitLoader(
                 lottieRes = R.raw.suitcase_lottie,
-                text = "Submitting the itinerary suggestion"
+                text = "Submitting the itinerary suggestion",
             )
         }
     }
@@ -256,38 +263,40 @@ fun TripPlanForm(
 @Composable
 private fun TripPlanFormPreview() {
     TripPlanForm(
-        trip = Trip(
-            id = 1,
-            tripName = "Name",
-            cities = listOf(
-                CitiesData(
-                    cityId = 5,
-                    cityName = "Barcelona",
-                    daysSpent = 2,
-                    order = 2,
-                ),
-                CitiesData(
-                    cityId = 4,
-                    cityName = "Paris",
-                    daysSpent = 2,
-                    order = 1,
-                ),
-                CitiesData(
-                    cityId = 7,
-                    cityName = "Zagreb",
-                    daysSpent = 0,
-                    order = 3,
-                ),
+        trip =
+            Trip(
+                id = 1,
+                tripName = "Name",
+                cities =
+                    listOf(
+                        CitiesData(
+                            cityId = 5,
+                            cityName = "Barcelona",
+                            daysSpent = 2,
+                            order = 2,
+                        ),
+                        CitiesData(
+                            cityId = 4,
+                            cityName = "Paris",
+                            daysSpent = 2,
+                            order = 1,
+                        ),
+                        CitiesData(
+                            cityId = 7,
+                            cityName = "Zagreb",
+                            daysSpent = 0,
+                            order = 3,
+                        ),
+                    ),
+                minTravelers = 10,
+                maxTravelers = 20,
+                transportation = TransportationType.BUS,
+                tripStartDate = System.currentTimeMillis(),
+                tripEndDate = System.currentTimeMillis(),
+                price = null,
+                coordinatorId = "1",
             ),
-            minTravelers = 10,
-            maxTravelers = 20,
-            transportation = TransportationType.BUS,
-            tripStartDate = System.currentTimeMillis(),
-            tripEndDate = System.currentTimeMillis(),
-            price = null,
-            coordinatorId = "1"
-        ),
         onSubmitClicked = {},
-        onBackPressed = {}
+        onBackPressed = {},
     )
 }

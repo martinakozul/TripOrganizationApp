@@ -34,7 +34,7 @@ import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 fun AssignGuideScreen(
     guideList: List<String>,
     assignGuide: (String) -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     var guide by remember { mutableStateOf<String?>(null) }
 
@@ -43,11 +43,11 @@ fun AssignGuideScreen(
     Scaffold(
         topBar = {
             CustomTopBar(title = "Assign a guide", onBackPressed = onBackPressed)
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CustomDropdownMenu(
                 label = guide ?: "Pick a guide",
@@ -55,14 +55,14 @@ fun AssignGuideScreen(
                 onItemSelected = {
                     guide = it
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(2.dp, shape = RoundedCornerShape(8.dp))
-                    .background(
-                        primaryContainer,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .shadow(2.dp, shape = RoundedCornerShape(8.dp))
+                        .background(
+                            primaryContainer,
+                            shape = RoundedCornerShape(8.dp),
+                        ).padding(16.dp),
             )
 
             CustomButton(
@@ -71,18 +71,18 @@ fun AssignGuideScreen(
                 onClick = {
                     showLoader = true
                     assignGuide(guide ?: "")
-                }
+                },
             )
         }
 
         AnimatedVisibility(
             visible = showLoader,
             enter = fadeIn() + scaleIn(),
-            exit = fadeOut() + scaleOut()
+            exit = fadeOut() + scaleOut(),
         ) {
             SubmitLoader(
                 lottieRes = R.raw.suitcase_lottie,
-                text = "Guide for the trip assigned. Hang on tight, partner offers will be coming in soon."
+                text = "Guide for the trip assigned. Hang on tight, partner offers will be coming in soon.",
             )
         }
     }
@@ -94,6 +94,6 @@ private fun AssignGuideScreenPreview() {
     AssignGuideScreen(
         guideList = listOf("Ana", "Petar", "Marin"),
         assignGuide = {},
-        onBackPressed = {}
+        onBackPressed = {},
     )
 }

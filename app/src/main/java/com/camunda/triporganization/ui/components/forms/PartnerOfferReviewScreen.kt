@@ -58,7 +58,7 @@ fun PartnerOfferReviewScreen(
     onOffersAccepted: (List<PartnerOfferItem>, List<PartnerOfferItem>) -> Unit,
     onOffersRejected: () -> Unit,
     onBackPressed: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var transport by remember { mutableStateOf<PartnerOfferItem?>(null) }
     var accommodation by remember { mutableStateOf<Map<Long, PartnerOfferItem>>(emptyMap()) }
@@ -68,102 +68,114 @@ fun PartnerOfferReviewScreen(
         topBar = {
             CustomTopBar(
                 title = "Pick offer",
-                onBackPressed = onBackPressed
+                onBackPressed = onBackPressed,
             )
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             trip?.let {
                 TripInformationCollapsible(it)
             }
             Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(2.dp, shape = RoundedCornerShape(8.dp))
-                        .background(
-                            primaryContainer,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(vertical = 8.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .shadow(2.dp, shape = RoundedCornerShape(8.dp))
+                            .background(
+                                primaryContainer,
+                                shape = RoundedCornerShape(8.dp),
+                            ).padding(vertical = 8.dp),
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         style = MaterialTheme.typography.bodyLarge,
-                        text = "Transport offers"
+                        text = "Transport offers",
                     )
 
                     Row(
-                        modifier = Modifier
-                            .horizontalScroll(rememberScrollState())
-
+                        modifier =
+                            Modifier
+                                .horizontalScroll(rememberScrollState()),
                     ) {
                         transportOffers.forEach { cityOffers ->
                             Column(
-                                modifier = Modifier
-                                    .padding(start = 16.dp, top = 8.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(onPrimary)
-                                    .width(200.dp)
-                                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                                modifier =
+                                    Modifier
+                                        .padding(start = 16.dp, top = 8.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(onPrimary)
+                                        .width(200.dp)
+                                        .padding(vertical = 4.dp, horizontal = 8.dp),
                             ) {
                                 Text(
                                     style = MaterialTheme.typography.labelLarge,
-                                    text = if (trip?.transportation == TransportationType.BUS) "All cities" else ("to " + cityOffers.value.firstOrNull()?.cityName)
+                                    text =
+                                        if (trip?.transportation ==
+                                            TransportationType.BUS
+                                        ) {
+                                            "All cities"
+                                        } else {
+                                            ("to " + cityOffers.value.firstOrNull()?.cityName)
+                                        },
                                 )
                                 cityOffers.value.forEachIndexed { i, offer ->
                                     Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable {
-                                                transport = offer
-                                            }
-                                            .background(
-                                                if (offer == transport) {
-                                                    primary
-                                                } else {
-                                                    onPrimary
-                                                }
-                                            )
-                                            .padding(vertical = 8.dp, horizontal = 4.dp)
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .clickable {
+                                                    transport = offer
+                                                }.background(
+                                                    if (offer == transport) {
+                                                        primary
+                                                    } else {
+                                                        onPrimary
+                                                    },
+                                                ).padding(vertical = 8.dp, horizontal = 4.dp),
                                     ) {
                                         Text(
                                             style = MaterialTheme.typography.bodyMedium,
                                             text = offer.partnerName,
-                                            color = if (offer == transport) {
-                                                onPrimary
-                                            } else {
-                                                onSurface
-                                            }
+                                            color =
+                                                if (offer == transport) {
+                                                    onPrimary
+                                                } else {
+                                                    onSurface
+                                                },
                                         )
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text(
                                             style = MaterialTheme.typography.labelLarge,
                                             text = offer.pricePerPerson.toString(),
-                                            color = if (offer == transport) {
-                                                onPrimary
-                                            } else {
-                                                onSurface
-                                            }
+                                            color =
+                                                if (offer == transport) {
+                                                    onPrimary
+                                                } else {
+                                                    onSurface
+                                                },
                                         )
                                     }
                                     if (i != cityOffers.value.lastIndex) {
                                         Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .heightIn(1.dp)
-                                                .background(Color.LightGray)
+                                            modifier =
+                                                Modifier
+                                                    .fillMaxWidth()
+                                                    .heightIn(1.dp)
+                                                    .background(Color.LightGray),
                                         )
                                     }
                                 }
@@ -173,83 +185,87 @@ fun PartnerOfferReviewScreen(
                 }
 
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(2.dp, shape = RoundedCornerShape(8.dp))
-                        .background(
-                            primaryContainer,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(vertical = 8.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .shadow(2.dp, shape = RoundedCornerShape(8.dp))
+                            .background(
+                                primaryContainer,
+                                shape = RoundedCornerShape(8.dp),
+                            ).padding(vertical = 8.dp),
                 ) {
                     Text(
                         style = MaterialTheme.typography.bodyLarge,
                         text = "Accommodation offers",
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp),
                     )
 
                     Row(
-                        modifier = Modifier
-                            .horizontalScroll(rememberScrollState())
-
+                        modifier =
+                            Modifier
+                                .horizontalScroll(rememberScrollState()),
                     ) {
                         accommodationOffers.forEach { cityOffers ->
                             Column(
-                                modifier = Modifier
-                                    .padding(start = 16.dp, top = 8.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(onPrimary)
-                                    .width(200.dp)
-                                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                                modifier =
+                                    Modifier
+                                        .padding(start = 16.dp, top = 8.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(onPrimary)
+                                        .width(200.dp)
+                                        .padding(vertical = 4.dp, horizontal = 8.dp),
                             ) {
                                 Text(
                                     style = MaterialTheme.typography.labelLarge,
-                                    text = cityOffers.value.firstOrNull()?.cityName ?: ""
+                                    text = cityOffers.value.firstOrNull()?.cityName ?: "",
                                 )
                                 cityOffers.value.forEachIndexed { i, offer ->
                                     Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable {
-                                                accommodation = accommodation.toMutableMap().apply {
-                                                    this[cityOffers.key] = offer
-                                                }
-                                            }
-                                            .background(
-                                                if (offer == accommodation[cityOffers.key]) {
-                                                    primary
-                                                } else {
-                                                    onPrimary
-                                                }
-                                            )
-                                            .padding(vertical = 8.dp, horizontal = 4.dp)
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .clickable {
+                                                    accommodation =
+                                                        accommodation.toMutableMap().apply {
+                                                            this[cityOffers.key] = offer
+                                                        }
+                                                }.background(
+                                                    if (offer == accommodation[cityOffers.key]) {
+                                                        primary
+                                                    } else {
+                                                        onPrimary
+                                                    },
+                                                ).padding(vertical = 8.dp, horizontal = 4.dp),
                                     ) {
                                         Text(
                                             style = MaterialTheme.typography.bodyMedium,
                                             text = offer.partnerName,
-                                            color = if (offer == accommodation[cityOffers.key]) {
-                                                onPrimary
-                                            } else {
-                                                onSurface
-                                            }
+                                            color =
+                                                if (offer == accommodation[cityOffers.key]) {
+                                                    onPrimary
+                                                } else {
+                                                    onSurface
+                                                },
                                         )
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text(
                                             style = MaterialTheme.typography.labelLarge,
                                             text = offer.pricePerPerson.toString(),
-                                            color = if (offer == accommodation[cityOffers.key]) {
-                                                onPrimary
-                                            } else {
-                                                onSurface
-                                            }
+                                            color =
+                                                if (offer == accommodation[cityOffers.key]) {
+                                                    onPrimary
+                                                } else {
+                                                    onSurface
+                                                },
                                         )
                                     }
                                     if (i != cityOffers.value.lastIndex) {
                                         Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .heightIn(1.dp)
-                                                .background(Color.LightGray)
+                                            modifier =
+                                                Modifier
+                                                    .fillMaxWidth()
+                                                    .heightIn(1.dp)
+                                                    .background(Color.LightGray),
                                         )
                                     }
                                 }
@@ -264,7 +280,7 @@ fun PartnerOfferReviewScreen(
                     onClick = {
                         onOffersAccepted(listOf(transport!!), accommodation.values.toList())
                         showLoader = true
-                    }
+                    },
                 )
 
                 CustomButton(
@@ -272,7 +288,7 @@ fun PartnerOfferReviewScreen(
                     onClick = {
                         onOffersRejected()
                         showLoader = true
-                    }
+                    },
                 )
             }
         }
@@ -280,14 +296,13 @@ fun PartnerOfferReviewScreen(
         AnimatedVisibility(
             visible = showLoader,
             enter = fadeIn() + scaleIn(),
-            exit = fadeOut() + scaleOut()
+            exit = fadeOut() + scaleOut(),
         ) {
             SubmitLoader(
                 lottieRes = R.raw.card_lottie,
-                text = "Letting the partners know"
+                text = "Letting the partners know",
             )
         }
-
     }
 }
 
@@ -295,112 +310,119 @@ fun PartnerOfferReviewScreen(
 @Composable
 private fun PartnerOfferReviewScreenPreview() {
     PartnerOfferReviewScreen(
-        accommodationOffers = mapOf(
-            1L to listOf(
-                PartnerOfferItem(
-                    id = 1,
-                    partnerId = 1,
-                    processKey = 2,
-                    partnerName = "Hilton",
-                    pricePerPerson = 500,
-                    cityId = 2,
-                    cityName = "Paris"
-                ),
-                PartnerOfferItem(
-                    id = 1,
-                    partnerId = 1,
-                    processKey = 2,
-                    partnerName = "Westin",
-                    pricePerPerson = 300,
-                    cityId = 2,
-                    cityName = "Paris"
-                )
+        accommodationOffers =
+            mapOf(
+                1L to
+                    listOf(
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Hilton",
+                            pricePerPerson = 500,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Westin",
+                            pricePerPerson = 300,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                    ),
+                2L to
+                    listOf(
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Hilton",
+                            pricePerPerson = 300,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Westin",
+                            pricePerPerson = 500,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Drugi",
+                            pricePerPerson = 300,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                    ),
             ),
-            2L to listOf(
-                PartnerOfferItem(
-                    id = 1,
-                    partnerId = 1,
-                    processKey = 2,
-                    partnerName = "Hilton",
-                    pricePerPerson = 300,
-                    cityId = 2,
-                    cityName = "Paris"
-                ),
-                PartnerOfferItem(
-                    id = 1,
-                    partnerId = 1,
-                    processKey = 2,
-                    partnerName = "Westin",
-                    pricePerPerson = 500,
-                    cityId = 2,
-                    cityName = "Paris"
-                ),
-                PartnerOfferItem(
-                    id = 1,
-                    partnerId = 1,
-                    processKey = 2,
-                    partnerName = "Drugi",
-                    pricePerPerson = 300,
-                    cityId = 2,
-                    cityName = "Paris"
-                )
-            )
-        ),
-        transportOffers = mapOf(
-            1L to listOf(
-                PartnerOfferItem(
-                    id = 1,
-                    partnerId = 1,
-                    processKey = 2,
-                    partnerName = "Prvi",
-                    pricePerPerson = 300,
-                    cityId = 2,
-                    cityName = "Paris"
-                ),
-                PartnerOfferItem(
-                    id = 1,
-                    partnerId = 1,
-                    processKey = 2,
-                    partnerName = "Drugi",
-                    pricePerPerson = 300,
-                    cityId = 2,
-                    cityName = "Paris"
-                ),
-            )
-        ),
+        transportOffers =
+            mapOf(
+                1L to
+                    listOf(
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Prvi",
+                            pricePerPerson = 300,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Drugi",
+                            pricePerPerson = 300,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                    ),
+            ),
         onOffersAccepted = { _, _ -> },
         onOffersRejected = {},
         onBackPressed = {},
-        trip = Trip(
-            id = 1,
-            tripName = "test trip",
-            cities = listOf(
-                CitiesData(
-                    cityId = 1,
-                    cityName = "lala",
-                    daysSpent = 2,
-                    order = 1,
-                    plan = "",
-                    includedActivities = emptyList(),
-                    extraActivities = emptyList()
-                ),
-                CitiesData(
-                    cityId = 1,
-                    cityName = "sd",
-                    daysSpent = 2,
-                    order = 2,
-                    plan = "",
-                    includedActivities = emptyList(),
-                    extraActivities = emptyList()
-                ),
+        trip =
+            Trip(
+                id = 1,
+                tripName = "test trip",
+                cities =
+                    listOf(
+                        CitiesData(
+                            cityId = 1,
+                            cityName = "lala",
+                            daysSpent = 2,
+                            order = 1,
+                            plan = "",
+                            includedActivities = emptyList(),
+                            extraActivities = emptyList(),
+                        ),
+                        CitiesData(
+                            cityId = 1,
+                            cityName = "sd",
+                            daysSpent = 2,
+                            order = 2,
+                            plan = "",
+                            includedActivities = emptyList(),
+                            extraActivities = emptyList(),
+                        ),
+                    ),
+                minTravelers = 10,
+                maxTravelers = 20,
+                transportation = TransportationType.PLANE,
+                tripStartDate = System.currentTimeMillis(),
+                tripEndDate = System.currentTimeMillis(),
+                price = null,
+                coordinatorId = AppSingleton.userId,
             ),
-            minTravelers = 10,
-            maxTravelers = 20,
-            transportation = TransportationType.PLANE,
-            tripStartDate = System.currentTimeMillis(),
-            tripEndDate = System.currentTimeMillis(),
-            price = null,
-            coordinatorId = AppSingleton.userId
-        )
     )
 }

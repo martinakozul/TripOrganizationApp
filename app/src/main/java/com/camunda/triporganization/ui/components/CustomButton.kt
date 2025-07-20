@@ -26,25 +26,25 @@ fun CustomButton(
     backgroundColor: Color = primary,
     contentColor: Color = onPrimary,
     shape: Shape = RoundedCornerShape(12.dp),
-    textStyle: TextStyle = MaterialTheme.typography.labelLarge
+    textStyle: TextStyle = MaterialTheme.typography.labelLarge,
 ) {
     Button(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor,
-            contentColor = contentColor,
-            disabledContainerColor = inverseSurface,
-            disabledContentColor = inverseOnSurface
-        ),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = backgroundColor,
+                contentColor = contentColor,
+                disabledContainerColor = inverseSurface,
+                disabledContentColor = inverseOnSurface,
+            ),
         shape = shape,
-        elevation = ButtonDefaults.buttonElevation()
+        elevation = ButtonDefaults.buttonElevation(),
     ) {
         Text(text = text, style = textStyle)
     }
 }
-
 
 @Preview
 @Composable

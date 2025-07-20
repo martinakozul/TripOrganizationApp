@@ -7,5 +7,5 @@ data class TripItinerary(
     val tripPlan: List<String>,
     val includedActivities: List<String>,
     val extraActivities: List<String>,
-    val note: String
+    val note: String,
 )

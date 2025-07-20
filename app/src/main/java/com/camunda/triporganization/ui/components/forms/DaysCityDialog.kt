@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 fun DaysCityDialog(
     cityName: String,
     onDaysEntered: (Int) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     var daysInCity by remember { mutableStateOf("") }
 
@@ -37,7 +37,7 @@ fun DaysCityDialog(
                     label = { Text("Days") },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
@@ -55,7 +55,7 @@ fun DaysCityDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
     )
 }
 
@@ -65,6 +65,6 @@ private fun DaysCityDialogPreview() {
     DaysCityDialog(
         cityName = "Ljubljana",
         onDaysEntered = {},
-        onDismiss = {}
+        onDismiss = {},
     )
 }

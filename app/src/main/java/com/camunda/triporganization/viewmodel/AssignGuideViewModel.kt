@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AssignGuideViewModel(application: Application): AndroidViewModel(application) {
+class AssignGuideViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     val service = Network.tripService
 
     private val _availableGuides = MutableStateFlow<List<String>>(emptyList())
@@ -21,7 +23,10 @@ class AssignGuideViewModel(application: Application): AndroidViewModel(applicati
         }
     }
 
-    fun assignTourGuide(tripId: Long, guide: String) {
+    fun assignTourGuide(
+        tripId: Long,
+        guide: String,
+    ) {
         viewModelScope.launch {
             service.assignTourGuide(tripId, guide)
         }

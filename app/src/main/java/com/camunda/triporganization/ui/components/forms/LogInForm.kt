@@ -14,19 +14,19 @@ import com.camunda.triporganization.ui.components.CustomButton
 @Composable
 fun LogInForm(
     onLoggedIn: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
     CustomButton(
         text = "Log in",
         modifier = modifier,
-        onClick = { Auth0Helper.logIn(context, onLoggedIn) }
+        onClick = { Auth0Helper.logIn(context, onLoggedIn) },
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun LogInFormPreview() {
-    LogInForm({_ -> }, modifier = Modifier.padding(16.dp))
+    LogInForm({ _ -> }, modifier = Modifier.padding(16.dp))
 }

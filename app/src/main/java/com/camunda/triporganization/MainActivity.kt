@@ -44,13 +44,13 @@ fun TripOrganizationScreen() {
 
     NavHost(
         navController = navController,
-        startDestination = NavigationScreen.LogIn.route
+        startDestination = NavigationScreen.LogIn.route,
     ) {
         composable(NavigationScreen.LogIn.route) {
             LogIn(
                 onNavigateToTripList = {
                     navController.navigate(NavigationScreen.TripList.route)
-                }
+                },
             )
         }
 
@@ -71,7 +71,7 @@ fun TripOrganizationScreen() {
                 },
                 onNavigateToTripItineraryReviewForm = { tripId ->
                     navController.navigate(NavigationScreen.TripItineraryReview.route + "/$tripId")
-                }
+                },
             )
         }
 
@@ -87,7 +87,7 @@ fun TripOrganizationScreen() {
                 onNavigateToAssignGuideForm = {
                     navController.navigate(NavigationScreen.AssignGuideForm.route + "/$tripId")
                 },
-                onBackPressed = { navController.navigateUp() }
+                onBackPressed = { navController.navigateUp() },
             )
         }
 
@@ -106,5 +106,4 @@ fun TripOrganizationScreen() {
             TripItineraryReview(tripId = tripId, onBackPressed = { navController.navigateUp() })
         }
     }
-
 }

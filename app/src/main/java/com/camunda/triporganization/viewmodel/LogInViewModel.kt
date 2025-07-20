@@ -13,8 +13,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LogInViewModel(application: Application) : AndroidViewModel(application) {
-
+class LogInViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     private val _roleState = MutableStateFlow(false)
     val roleState: StateFlow<Boolean> = _roleState.asStateFlow()
 
@@ -22,18 +23,19 @@ class LogInViewModel(application: Application) : AndroidViewModel(application) {
 
     fun logIn(username: String) {
         viewModelScope.launch {
-            val user = service.userLogIn(
-                UserLogInResponse(
-                    AppSingleton.userId ?: "", username,
-                    AppSingleton.userRole ?: UserRole.GUIDE
+            val user =
+                service.userLogIn(
+                    UserLogInResponse(
+                        AppSingleton.userId ?: "",
+                        username,
+                        AppSingleton.userRole ?: UserRole.GUIDE,
+                    ),
                 )
-            )
             if (user.isSuccessful) {
                 _roleState.update { true }
             } else {
                 // TODO show snackbar
             }
-
         }
     }
 }

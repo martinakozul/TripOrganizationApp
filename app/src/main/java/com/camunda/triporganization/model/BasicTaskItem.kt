@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class BasicTaskItem(
     val tripId: Long,
     val taskName: String,
-    var tripName: String? = null
+    var tripName: String? = null,
 )

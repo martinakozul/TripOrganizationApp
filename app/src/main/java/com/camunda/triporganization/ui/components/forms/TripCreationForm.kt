@@ -59,7 +59,7 @@ fun TripCreationForm(
     onCreateTrip: (Trip) -> Unit,
     onSaveChanges: (Trip) -> Unit,
     onBackPressed: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val trip = tripWrapper?.trip
 
@@ -84,50 +84,51 @@ fun TripCreationForm(
         topBar = {
             CustomTopBar(
                 title = "Fill trip data",
-                onBackPressed = onBackPressed
+                onBackPressed = onBackPressed,
             )
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Column(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .shadow(2.dp, shape = RoundedCornerShape(8.dp))
-                    .background(
-                        primaryContainer,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier =
+                    Modifier
+                        .padding(8.dp)
+                        .shadow(2.dp, shape = RoundedCornerShape(8.dp))
+                        .background(
+                            primaryContainer,
+                            shape = RoundedCornerShape(8.dp),
+                        ).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text("Trip name") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
                 Column(
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = 12.dp),
                 ) {
                     Row(
                         modifier = Modifier.horizontalScroll(rememberScrollState()),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         cities.forEachIndexed { index, city ->
                             Text(
                                 text = city.cityName,
-                                modifier = Modifier.combinedClickable(
-                                    onClick = { showDaysInputDialog = index },
-                                    onLongClick = {
-                                        cities.remove(city)
-                                    },
-                                    onLongClickLabel = ""
-                                )
+                                modifier =
+                                    Modifier.combinedClickable(
+                                        onClick = { showDaysInputDialog = index },
+                                        onLongClick = {
+                                            cities.remove(city)
+                                        },
+                                        onLongClickLabel = "",
+                                    ),
                             )
                             if (index != cities.lastIndex) {
                                 Text("- ")
@@ -143,68 +144,74 @@ fun TripCreationForm(
                                             cityId = it.id,
                                             cityName = it.name,
                                             daysSpent = 0,
-                                            order = cities.lastIndex + 1
-                                        )
+                                            order = cities.lastIndex + 1,
+                                        ),
                                     )
                                 }
-                            }
+                            },
                         )
                     }
                     Text(
                         style = MaterialTheme.typography.labelMedium,
-                        text = "Minimum days to fill: " + if (tripDate == null) {
-                            0
-                        } else {
-                            TimeUnit.MILLISECONDS.toDays(tripDate!!.second - tripDate!!.first) + 1
-                        }
+                        text =
+                            "Minimum days to fill: " +
+                                if (tripDate == null) {
+                                    0
+                                } else {
+                                    TimeUnit.MILLISECONDS.toDays(tripDate!!.second - tripDate!!.first) + 1
+                                },
                     )
                 }
 
-
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     OutlinedTextField(
                         value = minTravelers.toString(),
                         onValueChange = { minTravelers = it.toIntOrNull() ?: 10 },
                         label = { Text("Min Travelers") },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        modifier = Modifier.weight(1f)
+                        keyboardOptions =
+                            KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                            ),
+                        modifier = Modifier.weight(1f),
                     )
                     OutlinedTextField(
                         value = maxTravelers.toString(),
                         onValueChange = { maxTravelers = it.toIntOrNull() ?: 30 },
                         label = { Text("Max Travelers") },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        modifier = Modifier.weight(1f)
+                        keyboardOptions =
+                            KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                            ),
+                        modifier = Modifier.weight(1f),
                     )
                 }
 
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            datePickerShown = true
-                        }
-                        .padding(vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                datePickerShown = true
+                            }.padding(vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
-                        text = if (tripDate != null) {
-                            "${DateHelper.convertMillisToDate(tripDate!!.first)} - ${
-                                DateHelper.convertMillisToDate(tripDate!!.second)
-                            }"
-                        } else "Start date - End date"
+                        text =
+                            if (tripDate != null) {
+                                "${DateHelper.convertMillisToDate(tripDate!!.first)} - ${
+                                    DateHelper.convertMillisToDate(tripDate!!.second)
+                                }"
+                            } else {
+                                "Start date - End date"
+                            },
                     )
 
                     Text(
                         style = MaterialTheme.typography.labelMedium,
-                        text = "Minimum trip length: ${cities.sumOf { it.daysSpent }} days"
+                        text = "Minimum trip length: ${cities.sumOf { it.daysSpent }} days",
                     )
                 }
 
@@ -219,21 +226,22 @@ fun TripCreationForm(
                 Column {
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
-                        text = "Pick transportation type:"
+                        text = "Pick transportation type:",
                     )
 
                     TransportationType.entries.forEach {
                         Row(
-                            modifier = modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
+                            modifier =
+                                modifier
+                                    .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             RadioButton(
                                 selected = transportationType == it,
-                                onClick = { transportationType = it }
+                                onClick = { transportationType = it },
                             )
                             Text(
-                                text = it.name
+                                text = it.name,
                             )
                         }
                     }
@@ -253,9 +261,9 @@ fun TripCreationForm(
                             transportation = transportationType,
                             tripStartDate = tripDate?.first,
                             tripEndDate = tripDate?.second,
-                        )
+                        ),
                     )
-                }
+                },
             )
             CustomButton(
                 text = "Create trip",
@@ -271,9 +279,9 @@ fun TripCreationForm(
                             transportation = transportationType,
                             tripStartDate = tripDate?.first,
                             tripEndDate = tripDate?.second,
-                        )
+                        ),
                     )
-                }
+                },
             )
         }
 
@@ -284,18 +292,18 @@ fun TripCreationForm(
                     cities[i] = cities[i].copy(daysSpent = days)
                     showDaysInputDialog = null
                 },
-                onDismiss = { showDaysInputDialog = null }
+                onDismiss = { showDaysInputDialog = null },
             )
         }
 
         AnimatedVisibility(
             visible = showLoader,
             enter = fadeIn() + scaleIn(),
-            exit = fadeOut() + scaleOut()
+            exit = fadeOut() + scaleOut(),
         ) {
             SubmitLoader(
                 lottieRes = R.raw.suitcase_lottie,
-                text = "Trip created! Hang on tight while we contact partners"
+                text = "Trip created! Hang on tight while we contact partners",
             )
         }
     }
@@ -304,23 +312,24 @@ fun TripCreationForm(
         tripLength = cities.sumOf { it.daysSpent }
         if (tripDate != null) {
             val daysBetween = TimeUnit.MILLISECONDS.toDays(tripDate!!.second - tripDate!!.first)
-            createEnabled = if ((daysBetween.toInt() + 1) != tripLength) {
-                false
-            } else {
-                name.isNotEmpty() &&
+            createEnabled =
+                if ((daysBetween.toInt() + 1) != tripLength) {
+                    false
+                } else {
+                    name.isNotEmpty() &&
                         transportationType != null &&
                         cities.isNotEmpty() &&
                         minTravelers > 0 &&
                         maxTravelers >= minTravelers &&
                         tripDate != null
-            }
+                }
         } else {
             createEnabled = name.isNotEmpty() &&
-                    transportationType != null &&
-                    cities.isNotEmpty() &&
-                    minTravelers > 0 &&
-                    maxTravelers >= minTravelers &&
-                    tripDate != null
+                transportationType != null &&
+                cities.isNotEmpty() &&
+                minTravelers > 0 &&
+                maxTravelers >= minTravelers &&
+                tripDate != null
         }
     }
 }
@@ -329,13 +338,14 @@ fun TripCreationForm(
 @Composable
 private fun TripCreationFormPreview() {
     TripCreationForm(
-        tripWrapper = TripWrapper(
-            null,
-            listOf()
-        ),
+        tripWrapper =
+            TripWrapper(
+                null,
+                listOf(),
+            ),
         tripId = 1,
         onCreateTrip = {},
         onSaveChanges = {},
-        onBackPressed = {}
+        onBackPressed = {},
     )
 }

@@ -6,9 +6,11 @@ import kotlinx.serialization.Serializable
 data class UserLogInResponse(
     val id: String,
     val username: String,
-    val role: UserRole
+    val role: UserRole,
 )
 
 enum class UserRole {
-    NOT_LOGGED_IN, COORDINATOR, GUIDE
+    NOT_LOGGED_IN,
+    COORDINATOR,
+    GUIDE,
 }

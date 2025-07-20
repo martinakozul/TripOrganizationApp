@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ItineraryReviewViewModel(application: Application) : AndroidViewModel(application) {
+class ItineraryReviewViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     val service = Network.tripService
 
     private val _tripItinerary = MutableStateFlow<Trip?>(null)
@@ -30,7 +32,11 @@ class ItineraryReviewViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun submitReview(processKey: Long, price: Double?, note: String?) {
+    fun submitReview(
+        processKey: Long,
+        price: Double?,
+        note: String?,
+    ) {
         viewModelScope.launch {
             service.reviewTripItinerary(processKey, price, note)
         }

@@ -48,86 +48,91 @@ fun TripTilesList(
     selectedType: String,
     onAction: (TripListAction) -> Unit,
     onLoggedOut: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
     Scaffold(
         bottomBar = {
             Row(
-                modifier = Modifier
-                    .shadow(2.dp)
-                    .background(primary)
-                    .fillMaxWidth()
-                    .heightIn(min = 48.dp),
+                modifier =
+                    Modifier
+                        .shadow(2.dp)
+                        .background(primary)
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 Text(
                     color = onPrimary,
                     textAlign = TextAlign.Center,
                     text = "Home",
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 Box(
-                    modifier = Modifier
-                        .width(1.dp)
-                        .height(48.dp)
-                        .background(onPrimary)
+                    modifier =
+                        Modifier
+                            .width(1.dp)
+                            .height(48.dp)
+                            .background(onPrimary),
                 )
                 Text(
                     color = onPrimary,
                     textAlign = TextAlign.Center,
                     text = "Log Out",
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable {
-                            Auth0Helper.logOut(context, onLoggedOut = onLoggedOut)
-                        }
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .clickable {
+                                Auth0Helper.logOut(context, onLoggedOut = onLoggedOut)
+                            },
                 )
             }
         },
         floatingActionButton = {
             if (AppSingleton.userRole == UserRole.COORDINATOR) {
                 Row(
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
-                        .clickable { onAction.invoke(TripListAction.CreateFormAction(null)) }
-                        .background(
-                            MaterialTheme.colorScheme.secondary,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                            .clickable { onAction.invoke(TripListAction.CreateFormAction(null)) }
+                            .background(
+                                MaterialTheme.colorScheme.secondary,
+                                shape = RoundedCornerShape(8.dp),
+                            ).padding(horizontal = 12.dp, vertical = 8.dp),
                 ) {
                     Text(
                         color = MaterialTheme.colorScheme.onSecondary,
-                        text = "Create a new trip"
+                        text = "Create a new trip",
                     )
                 }
             }
-        }) { innerPadding ->
+        },
+    ) { innerPadding ->
         LazyColumn(modifier = modifier.padding(PaddingValues(bottom = innerPadding.calculateBottomPadding()))) {
             item {
                 LazyRow(
-                    modifier = Modifier
-                        .padding(top = 8.dp),
+                    modifier =
+                        Modifier
+                            .padding(top = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    contentPadding = PaddingValues(8.dp)
+                    contentPadding = PaddingValues(8.dp),
                 ) {
                     items(taskTypes.toList()) { type ->
                         Text(
-                            modifier = Modifier
-                                .background(
-                                    if (selectedType == type) primary else primaryContainer,
-                                    shape = RoundedCornerShape(4.dp)
-                                )
-                                .padding(8.dp)
-                                .clickable {
-                                    onAction.invoke(TripListAction.ChangeTaskTypeAction(type))
-                                },
+                            modifier =
+                                Modifier
+                                    .background(
+                                        if (selectedType == type) primary else primaryContainer,
+                                        shape = RoundedCornerShape(4.dp),
+                                    ).padding(8.dp)
+                                    .clickable {
+                                        onAction.invoke(TripListAction.ChangeTaskTypeAction(type))
+                                    },
                             text = type,
-                            color = if (selectedType == type) onPrimary else onPrimaryContainer
+                            color = if (selectedType == type) onPrimary else onPrimaryContainer,
                         )
                     }
                 }
@@ -135,51 +140,56 @@ fun TripTilesList(
             items(startedProcesses) { process ->
                 Column {
                     Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                val processKey = process.tripId
-                                when (selectedType) {
-                                    "Create trip" -> onAction.invoke(
-                                        TripListAction.CreateFormAction(
-                                            processKey
-                                        )
-                                    )
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    val processKey = process.tripId
+                                    when (selectedType) {
+                                        "Create trip" ->
+                                            onAction.invoke(
+                                                TripListAction.CreateFormAction(
+                                                    processKey,
+                                                ),
+                                            )
 
-                                    "Review offers" -> onAction.invoke(
-                                        TripListAction.ReviewOffersAction(
-                                            processKey
-                                        )
-                                    )
+                                        "Review offers" ->
+                                            onAction.invoke(
+                                                TripListAction.ReviewOffersAction(
+                                                    processKey,
+                                                ),
+                                            )
 
-                                    "Assign tour guide" -> onAction.invoke(
-                                        TripListAction.AssignGuideAction(
-                                            processKey
-                                        )
-                                    )
+                                        "Assign tour guide" ->
+                                            onAction.invoke(
+                                                TripListAction.AssignGuideAction(
+                                                    processKey,
+                                                ),
+                                            )
 
-                                    "Review trip plan" -> onAction.invoke(
-                                        TripListAction.TripItineraryReviewAction(
-                                            processKey
-                                        )
-                                    )
+                                        "Review trip plan" ->
+                                            onAction.invoke(
+                                                TripListAction.TripItineraryReviewAction(
+                                                    processKey,
+                                                ),
+                                            )
 
-                                    "Define trip plan" -> onAction.invoke(
-                                        TripListAction.TripItineraryAction(processKey)
-                                    )
-                                }
-
-                            }
-                            .padding(16.dp),
+                                        "Define trip plan" ->
+                                            onAction.invoke(
+                                                TripListAction.TripItineraryAction(processKey),
+                                            )
+                                    }
+                                }.padding(16.dp),
                         text = (process.tripName) ?: ("Unnamed trip " + process.tripId),
-                        color = Color.Black
+                        color = Color.Black,
                     )
 
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.LightGray)
-                            .heightIn(1.dp)
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .background(Color.LightGray)
+                                .heightIn(1.dp),
                     )
                 }
             }
@@ -192,35 +202,37 @@ fun TripTilesList(
 private fun TripTilesListPreview() {
     var taskType by remember { mutableStateOf("Create trip") }
     TripTilesList(
-        startedProcesses = listOf(
-            BasicTaskItem(
-                tripId = 1,
-                taskName = "Create trip",
-                tripName = "Test create trip"
+        startedProcesses =
+            listOf(
+                BasicTaskItem(
+                    tripId = 1,
+                    taskName = "Create trip",
+                    tripName = "Test create trip",
+                ),
+                BasicTaskItem(
+                    tripId = 1,
+                    taskName = "Create trip",
+                    tripName = "Test create trip",
+                ),
+                BasicTaskItem(
+                    tripId = 1,
+                    taskName = "Create trip",
+                    tripName = "Test create trip",
+                ),
+                BasicTaskItem(
+                    tripId = 1,
+                    taskName = "Review offers",
+                    tripName = "Test create trip",
+                ),
             ),
-            BasicTaskItem(
-                tripId = 1,
-                taskName = "Create trip",
-                tripName = "Test create trip"
+        taskTypes =
+            setOf(
+                "Create trip",
+                "Review offers",
+                "Assign guide",
+                "Review itinerary",
+                "Publish trip",
             ),
-            BasicTaskItem(
-                tripId = 1,
-                taskName = "Create trip",
-                tripName = "Test create trip"
-            ),
-            BasicTaskItem(
-                tripId = 1,
-                taskName = "Review offers",
-                tripName = "Test create trip"
-            ),
-        ),
-        taskTypes = setOf(
-            "Create trip",
-            "Review offers",
-            "Assign guide",
-            "Review itinerary",
-            "Publish trip"
-        ),
         selectedType = taskType,
         onLoggedOut = {},
         onAction = { action ->
@@ -235,15 +247,32 @@ private fun TripTilesListPreview() {
                 is TripListAction.TripItineraryAction -> {}
                 is TripListAction.TripItineraryReviewAction -> {}
             }
-        }
+        },
     )
 }
 
-sealed class TripListAction() {
-    class CreateFormAction(val processId: Long?) : TripListAction()
-    class ReviewOffersAction(val processId: Long) : TripListAction()
-    class AssignGuideAction(val processId: Long) : TripListAction()
-    class TripItineraryAction(val processId: Long) : TripListAction()
-    class TripItineraryReviewAction(val processId: Long) : TripListAction()
-    class ChangeTaskTypeAction(val type: String) : TripListAction()
+sealed class TripListAction {
+    class CreateFormAction(
+        val processId: Long?,
+    ) : TripListAction()
+
+    class ReviewOffersAction(
+        val processId: Long,
+    ) : TripListAction()
+
+    class AssignGuideAction(
+        val processId: Long,
+    ) : TripListAction()
+
+    class TripItineraryAction(
+        val processId: Long,
+    ) : TripListAction()
+
+    class TripItineraryReviewAction(
+        val processId: Long,
+    ) : TripListAction()
+
+    class ChangeTaskTypeAction(
+        val type: String,
+    ) : TripListAction()
 }

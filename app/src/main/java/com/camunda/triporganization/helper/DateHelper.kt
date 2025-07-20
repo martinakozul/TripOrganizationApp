@@ -7,8 +7,11 @@ import java.util.Date
 import java.util.Locale
 
 object DateHelper {
-    fun formatDuration(startDate: Long, endDate: Long): String {
-        //TODO
+    fun formatDuration(
+        startDate: Long,
+        endDate: Long,
+    ): String {
+        // TODO
         return "help"
     }
 

@@ -37,20 +37,26 @@ import com.camunda.triporganization.viewmodel.TripItineraryViewModel
 import com.camunda.triporganization.viewmodel.TripTilesListViewModel
 import kotlinx.coroutines.delay
 
-sealed class NavigationScreen(val route: String) {
+sealed class NavigationScreen(
+    val route: String,
+) {
     object LogIn : NavigationScreen("log_in")
+
     object TripList : NavigationScreen("trip_list")
+
     object TripCreationForm : NavigationScreen("trip_creation_form")
+
     object TripItineraryForm : NavigationScreen("trip_itinerary_form")
+
     object TripItineraryReview : NavigationScreen("trip_itinerary_review")
+
     object AssignGuideForm : NavigationScreen("assign_guide_form")
+
     object PartnerOffersReview : NavigationScreen("partner_offers_review")
 }
 
 @Composable
-fun LogIn(
-    onNavigateToTripList: () -> Unit
-) {
+fun LogIn(onNavigateToTripList: () -> Unit) {
     val viewModel: LogInViewModel = viewModel()
     val roleState = viewModel.roleState.collectAsState()
 
@@ -59,13 +65,14 @@ fun LogIn(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        LogInForm(onLoggedIn = {viewModel.logIn(it)})
+        LogInForm(onLoggedIn = { viewModel.logIn(it) })
     }
 }
 
@@ -76,7 +83,7 @@ fun TripList(
     onNavigateToReviewOffers: (Long) -> Unit,
     onNavigateToAssignGuideForm: (Long) -> Unit,
     onNavigateToTripItineraryForm: (Long) -> Unit,
-    onNavigateToTripItineraryReviewForm: (Long) -> Unit
+    onNavigateToTripItineraryReviewForm: (Long) -> Unit,
 ) {
     val viewModel: TripTilesListViewModel = viewModel()
 
@@ -87,11 +94,12 @@ fun TripList(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.fetchTasks()
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    viewModel.fetchTasks()
+                }
             }
-        }
 
         val lifecycle = lifecycleOwner.lifecycle
         lifecycle.addObserver(observer)
@@ -138,12 +146,15 @@ fun TripList(
                     onNavigateToTripItineraryReviewForm(action.processId)
                 }
             }
-        }
+        },
     )
 }
 
 @Composable
-fun TripCreationForm(onBackPressed: () -> Unit, tripId: Long) {
+fun TripCreationForm(
+    onBackPressed: () -> Unit,
+    tripId: Long,
+) {
     val viewModel: TripCreateViewModel = viewModel()
     viewModel.fetchTripDetails(tripId)
     val trip = viewModel.tripDetails.collectAsState()
@@ -156,12 +167,15 @@ fun TripCreationForm(onBackPressed: () -> Unit, tripId: Long) {
         onCreateTrip = {
             viewModel.createTrip(it)
         },
-        onBackPressed = onBackPressed
+        onBackPressed = onBackPressed,
     )
 }
 
 @Composable
-fun TripItineraryForm(tripId: Long, onBackPressed: () -> Unit) {
+fun TripItineraryForm(
+    tripId: Long,
+    onBackPressed: () -> Unit,
+) {
     val viewModel: TripItineraryViewModel = viewModel()
     viewModel.fetchTripData(tripId)
     val tripItinerary = viewModel.tripInformation.collectAsState()
@@ -171,12 +185,15 @@ fun TripItineraryForm(tripId: Long, onBackPressed: () -> Unit) {
         onSubmitClicked = { plan ->
             viewModel.submitTripItinerary(tripId, plan)
         },
-        onBackPressed = onBackPressed
+        onBackPressed = onBackPressed,
     )
 }
 
 @Composable
-fun TripItineraryReview(tripId: Long, onBackPressed: () -> Unit) {
+fun TripItineraryReview(
+    tripId: Long,
+    onBackPressed: () -> Unit,
+) {
     val viewModel: ItineraryReviewViewModel = viewModel()
     val trip = viewModel.tripItinerary.collectAsState()
 
@@ -186,12 +203,15 @@ fun TripItineraryReview(tripId: Long, onBackPressed: () -> Unit) {
         trip.value,
         onPublishClicked = { viewModel.submitReview(tripId, it, null) },
         onRejectClicked = { viewModel.submitReview(tripId, null, it) },
-        onBackPressed = onBackPressed
+        onBackPressed = onBackPressed,
     )
 }
 
 @Composable
-fun AssignGuideForm(tripId: Long, onBackPressed: () -> Unit) {
+fun AssignGuideForm(
+    tripId: Long,
+    onBackPressed: () -> Unit,
+) {
     val viewModel: AssignGuideViewModel = viewModel()
 
     viewModel.getOffers(tripId)
@@ -203,7 +223,7 @@ fun AssignGuideForm(tripId: Long, onBackPressed: () -> Unit) {
         assignGuide = { guide ->
             viewModel.assignTourGuide(tripId, guide)
         },
-        onBackPressed = onBackPressed
+        onBackPressed = onBackPressed,
     )
 }
 
@@ -211,7 +231,7 @@ fun AssignGuideForm(tripId: Long, onBackPressed: () -> Unit) {
 fun PartnerOffersReview(
     tripId: Long,
     onBackPressed: () -> Unit,
-    onNavigateToAssignGuideForm: () -> Unit
+    onNavigateToAssignGuideForm: () -> Unit,
 ) {
     val viewModel: PartnerOfferReviewViewModel = viewModel()
     val offers = viewModel.offers.collectAsState()
@@ -232,9 +252,10 @@ fun PartnerOffersReview(
                 viewModel.rejectAllOffers(tripId)
             },
             onBackPressed = onBackPressed,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = paddingValues.calculateBottomPadding())
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(bottom = paddingValues.calculateBottomPadding()),
         )
     }
 
@@ -244,5 +265,4 @@ fun PartnerOffersReview(
             onNavigateToAssignGuideForm()
         }
     }
-
 }

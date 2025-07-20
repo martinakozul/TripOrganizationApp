@@ -41,79 +41,89 @@ import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 @Composable
 fun TripInformationCollapsible(
     trip: Trip,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var showTripInformation by remember { mutableStateOf(false) }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable {
-                showTripInformation = !showTripInformation
-            }
-            .shadow(
-                2.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .background(
-                primaryContainer,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable {
+                    showTripInformation = !showTripInformation
+                }.shadow(
+                    2.dp,
+                    shape = RoundedCornerShape(8.dp),
+                ).background(
+                    primaryContainer,
+                    shape = RoundedCornerShape(8.dp),
+                ).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 color = onPrimaryContainer,
-                text = "Trip Information"
+                text = "Trip Information",
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
-                modifier = Modifier
-                    .padding(start = 4.dp)
-                    .size(24.dp),
+                modifier =
+                    Modifier
+                        .padding(start = 4.dp)
+                        .size(24.dp),
                 imageVector = if (showTripInformation) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                contentDescription = null
+                contentDescription = null,
             )
         }
 
         AnimatedVisibility(visible = showTripInformation) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
                     style = MaterialTheme.typography.bodyMedium,
-                    text = trip.tripName ?: ""
+                    text = trip.tripName ?: "",
                 )
                 Text(
                     style = MaterialTheme.typography.labelLarge,
                     text = "${DateHelper.convertMillisToDate(trip.tripStartDate)} - ${
                         DateHelper.convertMillisToDate(trip.tripEndDate)
-                    }"
+                    }",
                 )
                 Text(
                     style = MaterialTheme.typography.bodyMedium,
-                    text = trip.cities.joinToString(" - ") { "${it.cityName} (${it.daysSpent})" }
+                    text = trip.cities.joinToString(" - ") { "${it.cityName} (${it.daysSpent})" },
                 )
                 Text(
-                    text = "Passengers range: ${trip.minTravelers} - ${trip.maxTravelers}"
+                    text = "Passengers range: ${trip.minTravelers} - ${trip.maxTravelers}",
                 )
                 Text(
                     style = MaterialTheme.typography.bodyMedium,
-                    text = "Price " + (trip.price ?: "TBD")
+                    text = "Price " + (trip.price ?: "TBD"),
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.End,
                 ) {
                     Image(
-                        painter = painterResource(id = if (trip.transportation == TransportationType.BUS) R.drawable.ic_bus else R.drawable.ic_plane),
+                        painter =
+                            painterResource(
+                                id =
+                                    if (trip.transportation ==
+                                        TransportationType.BUS
+                                    ) {
+                                        R.drawable.ic_bus
+                                    } else {
+                                        R.drawable.ic_plane
+                                    },
+                            ),
                         contentDescription = null,
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                            .size(24.dp)
+                        modifier =
+                            Modifier
+                                .padding(start = 4.dp)
+                                .size(24.dp),
                     )
                 }
             }
@@ -125,36 +135,38 @@ fun TripInformationCollapsible(
 @Composable
 private fun TripInformationCollapsiblePreview() {
     TripInformationCollapsible(
-        trip = Trip(
-            id = 1,
-            tripName = "test trip",
-            cities = listOf(
-                CitiesData(
-                    cityId = 1,
-                    cityName = "lala",
-                    daysSpent = 2,
-                    order = 1,
-                    plan = "",
-                    includedActivities = emptyList(),
-                    extraActivities = emptyList()
-                ),
-                CitiesData(
-                    cityId = 1,
-                    cityName = "sd",
-                    daysSpent = 2,
-                    order = 2,
-                    plan = "",
-                    includedActivities = emptyList(),
-                    extraActivities = emptyList()
-                )
+        trip =
+            Trip(
+                id = 1,
+                tripName = "test trip",
+                cities =
+                    listOf(
+                        CitiesData(
+                            cityId = 1,
+                            cityName = "lala",
+                            daysSpent = 2,
+                            order = 1,
+                            plan = "",
+                            includedActivities = emptyList(),
+                            extraActivities = emptyList(),
+                        ),
+                        CitiesData(
+                            cityId = 1,
+                            cityName = "sd",
+                            daysSpent = 2,
+                            order = 2,
+                            plan = "",
+                            includedActivities = emptyList(),
+                            extraActivities = emptyList(),
+                        ),
+                    ),
+                minTravelers = 10,
+                maxTravelers = 20,
+                transportation = TransportationType.BUS,
+                tripStartDate = System.currentTimeMillis(),
+                tripEndDate = System.currentTimeMillis(),
+                price = null,
+                coordinatorId = AppSingleton.userId,
             ),
-            minTravelers = 10,
-            maxTravelers = 20,
-            transportation = TransportationType.BUS,
-            tripStartDate = System.currentTimeMillis(),
-            tripEndDate = System.currentTimeMillis(),
-            price = null,
-            coordinatorId = AppSingleton.userId
-        )
     )
 }

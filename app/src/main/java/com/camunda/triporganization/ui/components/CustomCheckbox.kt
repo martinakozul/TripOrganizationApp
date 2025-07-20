@@ -20,24 +20,22 @@ fun CustomCheckbox(
     isChecked: Boolean,
     onCheckedChanged: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
-
-
     Row(
         modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
             enabled = enabled,
             checked = isChecked,
             onCheckedChange = {
                 onCheckedChanged()
-            }
+            },
         )
 
         Text(
-            text = label
+            text = label,
         )
     }
 }
@@ -51,19 +49,20 @@ private fun CustomCheckboxPreview() {
 @Composable
 fun CustomRadioButton(
     label: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(
             selected = false,
-            onClick = {  }
+            onClick = { },
         )
         Text(
-            text = label
+            text = label,
         )
     }
 }

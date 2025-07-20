@@ -25,9 +25,10 @@ data class CitiesData(
     val order: Int,
     var plan: String = "",
     var includedActivities: List<String> = emptyList(),
-    var extraActivities: List<String> = emptyList()
+    var extraActivities: List<String> = emptyList(),
 )
 
 enum class TransportationType {
-    BUS, PLANE
+    BUS,
+    PLANE,
 }

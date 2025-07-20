@@ -23,31 +23,33 @@ import com.camunda.triporganization.ui.theme.Colors.primary
 fun CustomTopBar(
     title: String,
     onBackPressed: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(primary)
-            .padding(horizontal = 8.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(primary)
+                .padding(horizontal = 8.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            modifier = Modifier
-                .padding(start = 4.dp)
-                .size(24.dp)
-                .clickable {
-                    onBackPressed()
-                },
+            modifier =
+                Modifier
+                    .padding(start = 4.dp)
+                    .size(24.dp)
+                    .clickable {
+                        onBackPressed()
+                    },
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = null,
-            tint = onPrimary
+            tint = onPrimary,
         )
         Text(
             modifier = Modifier.padding(start = 8.dp),
             text = title,
             color = onPrimary,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }

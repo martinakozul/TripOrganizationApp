@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PartnerOfferResponse(
     val transport: List<PartnerOfferItem> = emptyList(),
-    val accommodation: List<PartnerOfferItem> = emptyList()
+    val accommodation: List<PartnerOfferItem> = emptyList(),
 )
 
 @Serializable
@@ -16,5 +16,5 @@ data class PartnerOfferItem(
     val partnerName: String,
     val pricePerPerson: Int,
     val cityId: Long,
-    val cityName: String
+    val cityName: String,
 )

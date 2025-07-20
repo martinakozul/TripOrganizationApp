@@ -27,7 +27,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -41,7 +41,6 @@ android {
     buildFeatures {
         compose = true
     }
-
 }
 
 dependencies {
@@ -70,7 +69,7 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlin.serialization )
+    implementation(libs.kotlin.serialization)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
 
     implementation(libs.androidx.room.runtime)
@@ -82,5 +81,4 @@ dependencies {
 
     implementation(libs.auth0)
     implementation(libs.jwtdecode)
-
 }

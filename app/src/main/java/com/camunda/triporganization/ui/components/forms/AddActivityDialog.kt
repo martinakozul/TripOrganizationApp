@@ -23,7 +23,7 @@ import com.camunda.triporganization.ui.components.CustomCheckbox
 fun AddActivityDialog(
     tripActivity: TripActivity?,
     onActivityCreated: (TripActivity) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     var activityName by remember { mutableStateOf("") }
     var price by remember { mutableStateOf<Double?>(tripActivity?.price) }
@@ -35,14 +35,14 @@ fun AddActivityDialog(
         text = {
             Column {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     OutlinedTextField(
                         value = activityName,
                         onValueChange = { activityName = it },
                         label = { Text("Activity Name") },
                         singleLine = true,
-                        modifier = Modifier.weight(2f)
+                        modifier = Modifier.weight(2f),
                     )
                     OutlinedTextField(
                         value = if (price != null) price.toString() else "",
@@ -52,14 +52,14 @@ fun AddActivityDialog(
                         label = { Text("Cost €") },
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                         singleLine = true,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                 }
 
                 CustomCheckbox(
                     label = "Is included in price?",
                     isChecked = isIncluded,
-                    onCheckedChanged = { isIncluded = !isIncluded }
+                    onCheckedChanged = { isIncluded = !isIncluded },
                 )
             }
         },
@@ -70,8 +70,8 @@ fun AddActivityDialog(
                         TripActivity(
                             name = activityName,
                             isIncluded = isIncluded,
-                            price = price ?: 0.0
-                        )
+                            price = price ?: 0.0,
+                        ),
                     )
                 }
             }) {
@@ -82,7 +82,7 @@ fun AddActivityDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
     )
 }
 
@@ -92,12 +92,12 @@ private fun AddActivityDialogPreview() {
     AddActivityDialog(
         tripActivity = null,
         onActivityCreated = {},
-        onDismiss = {}
+        onDismiss = {},
     )
 }
 
 data class TripActivity(
     val name: String,
     val isIncluded: Boolean,
-    val price: Double
+    val price: Double,
 )

@@ -54,7 +54,7 @@ fun TripPlanReviewForm(
     onPublishClicked: (Double) -> Unit,
     onRejectClicked: (String) -> Unit,
     onBackPressed: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (trip == null) return
 
@@ -70,91 +70,92 @@ fun TripPlanReviewForm(
         topBar = {
             CustomTopBar(
                 title = "Review itinerary",
-                onBackPressed = onBackPressed
+                onBackPressed = onBackPressed,
             )
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TripInformationCollapsible(trip = trip)
 
             Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .shadow(
-                        2.dp,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .background(
-                        primaryContainer,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            2.dp,
+                            shape = RoundedCornerShape(8.dp),
+                        ).background(
+                            primaryContainer,
+                            shape = RoundedCornerShape(8.dp),
+                        ).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Row(
-                    modifier = Modifier.clickable {
-                        showTripItinerary = !showTripItinerary
-                    },
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier =
+                        Modifier.clickable {
+                            showTripItinerary = !showTripItinerary
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(text = "Trip itinerary")
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                            .size(24.dp),
+                        modifier =
+                            Modifier
+                                .padding(start = 4.dp)
+                                .size(24.dp),
                         imageVector = if (showTripItinerary) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
 
                 AnimatedVisibility(visible = showTripItinerary) {
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         Text(
                             style = MaterialTheme.typography.bodyMedium,
-                            text = trip.cities.joinToString("\n") { it.plan }
+                            text = trip.cities.joinToString("\n") { it.plan },
                         )
                         Text(
                             style = MaterialTheme.typography.labelLarge,
-                            text = "Included activities"
+                            text = "Included activities",
                         )
                         Text(
                             style = MaterialTheme.typography.bodyMedium,
-                            text = trip.cities.map { it.includedActivities }.joinToString("\n")
+                            text = trip.cities.map { it.includedActivities }.joinToString("\n"),
                         )
                         Text(
                             style = MaterialTheme.typography.labelLarge,
-                            text = "Optional activities"
+                            text = "Optional activities",
                         )
                         Text(
                             style = MaterialTheme.typography.bodyMedium,
-                            text = trip.cities.map { it.extraActivities }.joinToString("\n")
+                            text = trip.cities.map { it.extraActivities }.joinToString("\n"),
                         )
                     }
                 }
             }
 
             Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .shadow(
-                        2.dp,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .background(
-                        primaryContainer,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .shadow(
+                            2.dp,
+                            shape = RoundedCornerShape(8.dp),
+                        ).background(
+                            primaryContainer,
+                            shape = RoundedCornerShape(8.dp),
+                        ).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 OutlinedTextField(
                     enabled = isApproved.not() && showLoader.not(),
@@ -162,7 +163,7 @@ fun TripPlanReviewForm(
                     minLines = 5,
                     onValueChange = { note = it },
                     label = { Text("Note for the guide") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
                 CustomCheckbox(
@@ -171,7 +172,7 @@ fun TripPlanReviewForm(
                         isApproved = !isApproved
                     },
                     isChecked = isApproved,
-                    label = "Approve submitted trip plan"
+                    label = "Approve submitted trip plan",
                 )
 
                 if (isApproved) {
@@ -180,7 +181,7 @@ fun TripPlanReviewForm(
                         value = (price ?: "").toString(),
                         onValueChange = { price = it.toDoubleOrNull() ?: 0.0 },
                         label = { Text("Price per person") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
@@ -191,17 +192,17 @@ fun TripPlanReviewForm(
                     if (isApproved) onPublishClicked(price ?: 100.0) else onRejectClicked(note)
                     showLoader = true
                 },
-                enabled = (!isApproved && note.isNotEmpty()) || (price != null && isApproved)
+                enabled = (!isApproved && note.isNotEmpty()) || (price != null && isApproved),
             )
         }
         AnimatedVisibility(
             visible = showLoader,
             enter = fadeIn() + scaleIn(),
-            exit = fadeOut() + scaleOut()
+            exit = fadeOut() + scaleOut(),
         ) {
             SubmitLoader(
                 lottieRes = R.raw.suitcase_lottie,
-                text = if (isApproved) "All set! Sit back and relax while the trip is being published" else "Letting the guide know..."
+                text = if (isApproved) "All set! Sit back and relax while the trip is being published" else "Letting the guide know...",
             )
         }
     }
@@ -213,37 +214,39 @@ private fun TripPlanReviewFormPreview() {
     TripPlanReviewForm(
         onRejectClicked = {},
         onPublishClicked = {},
-        trip = Trip(
-            id = 1,
-            tripName = "test trip",
-            cities = listOf(
-                CitiesData(
-                    cityId = 1,
-                    cityName = "lala",
-                    daysSpent = 2,
-                    order = 1,
-                    plan = "dflp\nkjsdka\najsdkajsd",
-                    includedActivities = emptyList(),
-                    extraActivities = emptyList()
-                ),
-                CitiesData(
-                    cityId = 1,
-                    cityName = "sd",
-                    daysSpent = 2,
-                    order = 2,
-                    plan = "dflp\nkjsdka\najsdkajsd",
-                    includedActivities = emptyList(),
-                    extraActivities = emptyList()
-                ),
+        trip =
+            Trip(
+                id = 1,
+                tripName = "test trip",
+                cities =
+                    listOf(
+                        CitiesData(
+                            cityId = 1,
+                            cityName = "lala",
+                            daysSpent = 2,
+                            order = 1,
+                            plan = "dflp\nkjsdka\najsdkajsd",
+                            includedActivities = emptyList(),
+                            extraActivities = emptyList(),
+                        ),
+                        CitiesData(
+                            cityId = 1,
+                            cityName = "sd",
+                            daysSpent = 2,
+                            order = 2,
+                            plan = "dflp\nkjsdka\najsdkajsd",
+                            includedActivities = emptyList(),
+                            extraActivities = emptyList(),
+                        ),
+                    ),
+                minTravelers = 10,
+                maxTravelers = 20,
+                transportation = TransportationType.PLANE,
+                tripStartDate = System.currentTimeMillis(),
+                tripEndDate = System.currentTimeMillis(),
+                price = null,
+                coordinatorId = AppSingleton.userId,
             ),
-            minTravelers = 10,
-            maxTravelers = 20,
-            transportation = TransportationType.PLANE,
-            tripStartDate = System.currentTimeMillis(),
-            tripEndDate = System.currentTimeMillis(),
-            price = null,
-            coordinatorId = AppSingleton.userId
-        ),
-        onBackPressed = {}
+        onBackPressed = {},
     )
 }

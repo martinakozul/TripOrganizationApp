@@ -22,19 +22,25 @@ import java.time.ZoneId
 @Composable
 fun DateRangePickerModal(
     onDateRangeSelected: (Pair<Long, Long>) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
-    val todayMillis = remember {
-        LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    }
-    val dateRangePickerState = rememberDateRangePickerState(
-        initialSelectedStartDateMillis = null,
-        initialSelectedEndDateMillis = null
-    )
+    val todayMillis =
+        remember {
+            LocalDate
+                .now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+        }
+    val dateRangePickerState =
+        rememberDateRangePickerState(
+            initialSelectedStartDateMillis = null,
+            initialSelectedEndDateMillis = null,
+        )
     val isValidSelection by remember(
         dateRangePickerState.selectedStartDateMillis,
         dateRangePickerState.selectedEndDateMillis,
-        todayMillis
+        todayMillis,
     ) {
         derivedStateOf {
             val start = dateRangePickerState.selectedStartDateMillis
@@ -49,17 +55,17 @@ fun DateRangePickerModal(
             TextButton(
                 enabled =
                     dateRangePickerState.selectedStartDateMillis != null &&
-                            dateRangePickerState.selectedEndDateMillis != null &&
-                            isValidSelection,
+                        dateRangePickerState.selectedEndDateMillis != null &&
+                        isValidSelection,
                 onClick = {
                     onDateRangeSelected(
                         Pair(
                             dateRangePickerState.selectedStartDateMillis!!,
-                            dateRangePickerState.selectedEndDateMillis!!
-                        )
+                            dateRangePickerState.selectedEndDateMillis!!,
+                        ),
                     )
                     onDismiss()
-                }
+                },
             ) {
                 Text("OK")
             }
@@ -68,19 +74,20 @@ fun DateRangePickerModal(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
     ) {
         DateRangePicker(
             state = dateRangePickerState,
             title = {
                 Text(
-                    text = "Select date range"
+                    text = "Select date range",
                 )
             },
             showModeToggle = false,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(500.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(500.dp),
         )
     }
 }

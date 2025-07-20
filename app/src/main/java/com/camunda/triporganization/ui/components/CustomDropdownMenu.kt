@@ -25,33 +25,35 @@ fun CustomDropdownMenu(
     label: String,
     menuItemData: List<String>,
     onItemSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier
-            .padding(16.dp)
+        modifier =
+            Modifier
+                .padding(16.dp),
     ) {
         Row(
             modifier = modifier.clickable { expanded = !expanded },
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 style = MaterialTheme.typography.labelLarge,
-                text = label
+                text = label,
             )
             Icon(
-                modifier = Modifier
-                    .padding(start = 4.dp)
-                    .size(16.dp),
+                modifier =
+                    Modifier
+                        .padding(start = 4.dp)
+                        .size(16.dp),
                 imageVector = Icons.Default.Add,
-                contentDescription = null
+                contentDescription = null,
             )
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             menuItemData.forEach { option ->
                 DropdownMenuItem(
@@ -59,7 +61,7 @@ fun CustomDropdownMenu(
                     onClick = {
                         expanded = !expanded
                         onItemSelected(option)
-                    }
+                    },
                 )
             }
         }
@@ -72,6 +74,6 @@ private fun CustomDropdownMenuPreview() {
     CustomDropdownMenu(
         label = "Add city",
         onItemSelected = {},
-        menuItemData = List(5) { "Option ${it + 1}" }
+        menuItemData = List(5) { "Option ${it + 1}" },
     )
 }

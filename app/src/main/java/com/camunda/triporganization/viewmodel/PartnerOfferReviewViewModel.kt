@@ -13,7 +13,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PartnerOfferReviewViewModel(application: Application): AndroidViewModel(application) {
+class PartnerOfferReviewViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     val service = Network.tripService
 
     private val _offers = MutableStateFlow<OffersWrapper?>(null)
@@ -22,12 +24,14 @@ class PartnerOfferReviewViewModel(application: Application): AndroidViewModel(ap
     fun getOffers(processKey: Long) {
         viewModelScope.launch {
             val tripAsync = async { service.getTripInformation(processKey) }
-            val offerResponse = async {  service.getOffersForTrip(processKey) }
+            val offerResponse = async { service.getOffersForTrip(processKey) }
 
-            _offers.update { OffersWrapper(
-                tripAsync.await().body(),
-                groupOffers(offerResponse.await())
-            ) }
+            _offers.update {
+                OffersWrapper(
+                    tripAsync.await().body(),
+                    groupOffers(offerResponse.await()),
+                )
+            }
         }
     }
 
@@ -37,7 +41,11 @@ class PartnerOfferReviewViewModel(application: Application): AndroidViewModel(ap
         }
     }
 
-    fun acceptOffers(tripId: Long, transportOffer: List<PartnerOfferItem>, accommodationOffer: List<PartnerOfferItem>) {
+    fun acceptOffers(
+        tripId: Long,
+        transportOffer: List<PartnerOfferItem>,
+        accommodationOffer: List<PartnerOfferItem>,
+    ) {
         viewModelScope.launch {
             service.acceptOffersForTrip(tripId, transportOffer.map { it.id }, accommodationOffer.map { it.id })
         }
@@ -49,17 +57,17 @@ class PartnerOfferReviewViewModel(application: Application): AndroidViewModel(ap
 
         return GroupedPartnerOffers(
             accommodation = accommodationGrouped,
-            transport = transportGrouped
+            transport = transportGrouped,
         )
     }
 }
 
 data class GroupedPartnerOffers(
     val accommodation: Map<Long, List<PartnerOfferItem>>,
-    val transport: Map<Long, List<PartnerOfferItem>>
+    val transport: Map<Long, List<PartnerOfferItem>>,
 )
 
 data class OffersWrapper(
     val trip: Trip?,
-    val groupedPartnerOffers: GroupedPartnerOffers
+    val groupedPartnerOffers: GroupedPartnerOffers,
 )

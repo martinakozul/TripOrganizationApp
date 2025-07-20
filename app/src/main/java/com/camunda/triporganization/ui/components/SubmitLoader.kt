@@ -33,37 +33,39 @@ import com.camunda.triporganization.R
 fun SubmitLoader(
     @RawRes lottieRes: Int,
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val lottieComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(lottieRes))
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background.copy(alpha = 0.7f))
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background.copy(alpha = 0.7f)),
     ) {
         Column(
-            modifier = Modifier
-                .width(200.dp)
-                .drawBehind {
-                    drawCircle(
-                        color = Color.White,
-                        radius = 400.dp.value
-                    )
-                },
+            modifier =
+                Modifier
+                    .width(200.dp)
+                    .drawBehind {
+                        drawCircle(
+                            color = Color.White,
+                            radius = 400.dp.value,
+                        )
+                    },
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             LottieAnimation(
                 composition = lottieComposition,
                 iterations = LottieConstants.IterateForever,
-                modifier = Modifier.size(92.dp)
+                modifier = Modifier.size(92.dp),
             )
 
             Text(
                 textAlign = TextAlign.Center,
-                text = text
+                text = text,
             )
         }
     }
@@ -74,6 +76,6 @@ fun SubmitLoader(
 private fun SubmitLoaderPreview() {
     SubmitLoader(
         lottieRes = R.raw.card_lottie,
-        text = "Notifying partners about your decisions"
+        text = "Notifying partners about your decisions",
     )
 }

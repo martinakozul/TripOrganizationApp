@@ -12,18 +12,21 @@ object Network {
     private const val BASE_URL = "http://10.0.2.2:8080/"
 //    private const val BASE_URL = "http://192.168.100.11:8080/"
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-        prettyPrint = false
-        encodeDefaults = true
-    }
+    private val json =
+        Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+            prettyPrint = false
+            encodeDefaults = true
+        }
 
     private val okHttpClient: OkHttpClient by lazy {
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
-        }
-        OkHttpClient.Builder()
+        val logging =
+            HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BASIC
+            }
+        OkHttpClient
+            .Builder()
             .addInterceptor(logging)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
@@ -32,8 +35,9 @@ object Network {
     }
 
     val instance: Retrofit by lazy {
-        val contentType ="application/json; charset=UTF8".toMediaType()
-        Retrofit.Builder()
+        val contentType = "application/json; charset=UTF8".toMediaType()
+        Retrofit
+            .Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory(contentType))
