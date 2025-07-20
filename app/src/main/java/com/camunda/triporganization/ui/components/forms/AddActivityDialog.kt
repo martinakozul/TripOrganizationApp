@@ -35,7 +35,7 @@ fun AddActivityDialog(
         title = {
             Text(
                 style = AppTypography.displaySmall,
-                text = "Add activity"
+                text = "Add activity",
             )
         },
         text = {
