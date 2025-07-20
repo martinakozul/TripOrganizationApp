@@ -14,11 +14,13 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -90,18 +92,14 @@ fun TripCreationForm(
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
                 modifier =
                     Modifier
-                        .padding(8.dp)
-                        .shadow(2.dp, shape = RoundedCornerShape(8.dp))
-                        .background(
-                            primaryContainer,
-                            shape = RoundedCornerShape(8.dp),
-                        ).padding(16.dp),
+                        .shadow(2.dp)
+                        .background(primaryContainer)
+                        .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 OutlinedTextField(
@@ -155,11 +153,11 @@ fun TripCreationForm(
                         style = MaterialTheme.typography.labelMedium,
                         text =
                             "Minimum days to fill: " +
-                                if (tripDate == null) {
-                                    0
-                                } else {
-                                    TimeUnit.MILLISECONDS.toDays(tripDate!!.second - tripDate!!.first) + 1
-                                },
+                                    if (tripDate == null) {
+                                        0
+                                    } else {
+                                        TimeUnit.MILLISECONDS.toDays(tripDate!!.second - tripDate!!.first) + 1
+                                    },
                     )
                 }
 
@@ -194,7 +192,8 @@ fun TripCreationForm(
                             .fillMaxWidth()
                             .clickable {
                                 datePickerShown = true
-                            }.padding(vertical = 8.dp),
+                            }
+                            .padding(vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
@@ -248,6 +247,7 @@ fun TripCreationForm(
                 }
             }
 
+            Spacer(modifier = Modifier.weight(1f))
             CustomButton(
                 text = "Save changes",
                 onClick = {
@@ -265,6 +265,7 @@ fun TripCreationForm(
                     )
                 },
             )
+            HorizontalDivider()
             CustomButton(
                 text = "Create trip",
                 enabled = createEnabled,
@@ -317,19 +318,19 @@ fun TripCreationForm(
                     false
                 } else {
                     name.isNotEmpty() &&
-                        transportationType != null &&
-                        cities.isNotEmpty() &&
-                        minTravelers > 0 &&
-                        maxTravelers >= minTravelers &&
-                        tripDate != null
+                            transportationType != null &&
+                            cities.isNotEmpty() &&
+                            minTravelers > 0 &&
+                            maxTravelers >= minTravelers &&
+                            tripDate != null
                 }
         } else {
             createEnabled = name.isNotEmpty() &&
-                transportationType != null &&
-                cities.isNotEmpty() &&
-                minTravelers > 0 &&
-                maxTravelers >= minTravelers &&
-                tripDate != null
+                    transportationType != null &&
+                    cities.isNotEmpty() &&
+                    minTravelers > 0 &&
+                    maxTravelers >= minTravelers &&
+                    tripDate != null
         }
     }
 }

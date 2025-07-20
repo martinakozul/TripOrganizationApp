@@ -8,12 +8,10 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +27,7 @@ import com.camunda.triporganization.ui.components.CustomButton
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.SubmitLoader
 import com.camunda.triporganization.ui.theme.Colors.primaryContainer
+import com.camunda.triporganization.ui.theme.Colors.surface
 
 @Composable
 fun AssignGuideScreen(
@@ -41,6 +40,7 @@ fun AssignGuideScreen(
     var showLoader by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = Modifier.background(surface),
         topBar = {
             CustomTopBar(title = "Assign a guide", onBackPressed = onBackPressed)
         },
@@ -55,15 +55,14 @@ fun AssignGuideScreen(
                 onItemSelected = {
                     guide = it
                 },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .shadow(2.dp, shape = RoundedCornerShape(8.dp))
-                        .background(
-                            primaryContainer,
-                            shape = RoundedCornerShape(8.dp),
-                        ).padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(2.dp)
+                    .background(primaryContainer)
+                    .padding(16.dp),
             )
+
+            Spacer(modifier = Modifier.weight(1f))
 
             CustomButton(
                 text = "Assign guide",

@@ -3,7 +3,9 @@ package com.camunda.triporganization.ui.components.forms
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -36,6 +38,8 @@ fun LogInForm(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.weight(1f))
+
         LottieAnimation(
             speed = 0.5f,
             composition = lottieComposition,
@@ -43,8 +47,9 @@ fun LogInForm(
             modifier = Modifier.size(200.dp),
         )
 
+        Spacer(modifier = Modifier.weight(1f))
+
         CustomButton(
-            modifier = Modifier.padding(top = 48.dp),
             text = "Log in",
             onClick = { Auth0Helper.logIn(context, onLoggedIn) },
         )
@@ -54,5 +59,5 @@ fun LogInForm(
 @Preview(showBackground = true)
 @Composable
 private fun LogInFormPreview() {
-    LogInForm({ _ -> }, modifier = Modifier.padding(16.dp))
+    LogInForm({ _ -> })
 }

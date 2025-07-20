@@ -11,16 +11,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -47,6 +47,7 @@ import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.SubmitLoader
 import com.camunda.triporganization.ui.components.TripInformationCollapsible
 import com.camunda.triporganization.ui.theme.Colors.primaryContainer
+import com.camunda.triporganization.ui.theme.Colors.surface
 
 @Composable
 fun TripPlanReviewForm(
@@ -75,116 +76,116 @@ fun TripPlanReviewForm(
         },
     ) { innerPadding ->
         Column(
-            modifier =
-                modifier
-                    .padding(innerPadding)
-                    .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize().background(surface)
         ) {
-            TripInformationCollapsible(trip = trip)
-
             Column(
                 modifier =
-                    modifier
-                        .fillMaxWidth()
-                        .shadow(
-                            2.dp,
-                            shape = RoundedCornerShape(8.dp),
-                        ).background(
-                            primaryContainer,
-                            shape = RoundedCornerShape(8.dp),
-                        ).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                    Modifier
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Row(
+                TripInformationCollapsible(trip = trip)
+
+                HorizontalDivider()
+
+                Column(
                     modifier =
-                        Modifier.clickable {
-                            showTripItinerary = !showTripItinerary
-                        },
-                    verticalAlignment = Alignment.CenterVertically,
+                        modifier
+                            .fillMaxWidth()
+                            .shadow(2.dp)
+                            .background(primaryContainer)
+                            .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Text(text = "Trip itinerary")
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(
+                    Row(
                         modifier =
-                            Modifier
-                                .padding(start = 4.dp)
-                                .size(24.dp),
-                        imageVector = if (showTripItinerary) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                        contentDescription = null,
-                    )
+                            Modifier.clickable {
+                                showTripItinerary = !showTripItinerary
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(text = "Trip itinerary")
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            modifier =
+                                Modifier
+                                    .padding(start = 4.dp)
+                                    .size(24.dp),
+                            imageVector = if (showTripItinerary) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                            contentDescription = null,
+                        )
+                    }
+
+                    AnimatedVisibility(visible = showTripItinerary) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            Text(
+                                style = MaterialTheme.typography.bodyMedium,
+                                text = trip.cities.joinToString("\n") { it.plan },
+                            )
+                            Text(
+                                style = MaterialTheme.typography.labelLarge,
+                                text = "Included activities",
+                            )
+                            Text(
+                                style = MaterialTheme.typography.bodyMedium,
+                                text = trip.cities.map { it.includedActivities }.joinToString("\n"),
+                            )
+                            Text(
+                                style = MaterialTheme.typography.labelLarge,
+                                text = "Optional activities",
+                            )
+                            Text(
+                                style = MaterialTheme.typography.bodyMedium,
+                                text = trip.cities.map { it.extraActivities }.joinToString("\n"),
+                            )
+                        }
+                    }
                 }
 
-                AnimatedVisibility(visible = showTripItinerary) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Text(
-                            style = MaterialTheme.typography.bodyMedium,
-                            text = trip.cities.joinToString("\n") { it.plan },
-                        )
-                        Text(
-                            style = MaterialTheme.typography.labelLarge,
-                            text = "Included activities",
-                        )
-                        Text(
-                            style = MaterialTheme.typography.bodyMedium,
-                            text = trip.cities.map { it.includedActivities }.joinToString("\n"),
-                        )
-                        Text(
-                            style = MaterialTheme.typography.labelLarge,
-                            text = "Optional activities",
-                        )
-                        Text(
-                            style = MaterialTheme.typography.bodyMedium,
-                            text = trip.cities.map { it.extraActivities }.joinToString("\n"),
+                Column(
+                    modifier =
+                        modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .shadow(2.dp)
+                            .background(primaryContainer)
+                            .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    OutlinedTextField(
+                        enabled = isApproved.not() && showLoader.not(),
+                        value = if (isApproved) "" else note,
+                        minLines = 5,
+                        onValueChange = { note = it },
+                        label = { Text("Note for the guide") },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    CustomCheckbox(
+                        enabled = showLoader.not(),
+                        onCheckedChanged = {
+                            isApproved = !isApproved
+                        },
+                        isChecked = isApproved,
+                        label = "Approve submitted trip plan",
+                    )
+
+                    if (isApproved) {
+                        OutlinedTextField(
+                            enabled = showLoader.not(),
+                            value = (price ?: "").toString(),
+                            onValueChange = { price = it.toDoubleOrNull() ?: 0.0 },
+                            label = { Text("Price per person") },
+                            modifier = Modifier.fillMaxWidth(),
                         )
                     }
                 }
             }
 
-            Column(
-                modifier =
-                    modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .shadow(
-                            2.dp,
-                            shape = RoundedCornerShape(8.dp),
-                        ).background(
-                            primaryContainer,
-                            shape = RoundedCornerShape(8.dp),
-                        ).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                OutlinedTextField(
-                    enabled = isApproved.not() && showLoader.not(),
-                    value = if (isApproved) "" else note,
-                    minLines = 5,
-                    onValueChange = { note = it },
-                    label = { Text("Note for the guide") },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-
-                CustomCheckbox(
-                    enabled = showLoader.not(),
-                    onCheckedChanged = {
-                        isApproved = !isApproved
-                    },
-                    isChecked = isApproved,
-                    label = "Approve submitted trip plan",
-                )
-
-                if (isApproved) {
-                    OutlinedTextField(
-                        enabled = showLoader.not(),
-                        value = (price ?: "").toString(),
-                        onValueChange = { price = it.toDoubleOrNull() ?: 0.0 },
-                        label = { Text("Price per person") },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-            }
+            Spacer(Modifier.weight(1f))
 
             CustomButton(
                 text = if (isApproved) "Publish trip" else "Send back to guide",

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -49,6 +51,7 @@ import com.camunda.triporganization.ui.theme.Colors.onPrimary
 import com.camunda.triporganization.ui.theme.Colors.onSurface
 import com.camunda.triporganization.ui.theme.Colors.primary
 import com.camunda.triporganization.ui.theme.Colors.primaryContainer
+import com.camunda.triporganization.ui.theme.Colors.surface
 
 @Composable
 fun PartnerOfferReviewScreen(
@@ -75,6 +78,8 @@ fun PartnerOfferReviewScreen(
         Column(
             modifier =
                 modifier
+                    .fillMaxSize()
+                    .background(surface)
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -86,7 +91,7 @@ fun PartnerOfferReviewScreen(
                 modifier =
                     modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -94,11 +99,9 @@ fun PartnerOfferReviewScreen(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .shadow(2.dp, shape = RoundedCornerShape(8.dp))
-                            .background(
-                                primaryContainer,
-                                shape = RoundedCornerShape(8.dp),
-                            ).padding(vertical = 8.dp),
+                            .shadow(2.dp)
+                            .background(primaryContainer)
+                            .padding(vertical = 8.dp),
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = 16.dp),
@@ -139,13 +142,15 @@ fun PartnerOfferReviewScreen(
                                                 .fillMaxWidth()
                                                 .clickable {
                                                     transport = offer
-                                                }.background(
+                                                }
+                                                .background(
                                                     if (offer == transport) {
                                                         primary
                                                     } else {
                                                         onPrimary
                                                     },
-                                                ).padding(vertical = 8.dp, horizontal = 4.dp),
+                                                )
+                                                .padding(vertical = 8.dp, horizontal = 4.dp),
                                     ) {
                                         Text(
                                             style = MaterialTheme.typography.bodyMedium,
@@ -188,11 +193,10 @@ fun PartnerOfferReviewScreen(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .shadow(2.dp, shape = RoundedCornerShape(8.dp))
-                            .background(
-                                primaryContainer,
-                                shape = RoundedCornerShape(8.dp),
-                            ).padding(vertical = 8.dp),
+                            .shadow(2.dp)
+                            .background(primaryContainer
+                            )
+                            .padding(vertical = 8.dp),
                 ) {
                     Text(
                         style = MaterialTheme.typography.bodyLarge,
@@ -229,13 +233,15 @@ fun PartnerOfferReviewScreen(
                                                         accommodation.toMutableMap().apply {
                                                             this[cityOffers.key] = offer
                                                         }
-                                                }.background(
+                                                }
+                                                .background(
                                                     if (offer == accommodation[cityOffers.key]) {
                                                         primary
                                                     } else {
                                                         onPrimary
                                                     },
-                                                ).padding(vertical = 8.dp, horizontal = 4.dp),
+                                                )
+                                                .padding(vertical = 8.dp, horizontal = 4.dp),
                                     ) {
                                         Text(
                                             style = MaterialTheme.typography.bodyMedium,
@@ -273,24 +279,28 @@ fun PartnerOfferReviewScreen(
                         }
                     }
                 }
-
-                CustomButton(
-                    text = "Accept selected offers",
-                    enabled = true, // transport != null && accommodation.keys.size == accommodationOffers.keys.size,
-                    onClick = {
-                        onOffersAccepted(listOf(transport!!), accommodation.values.toList())
-                        showLoader = true
-                    },
-                )
-
-                CustomButton(
-                    text = "Reject all offers",
-                    onClick = {
-                        onOffersRejected()
-                        showLoader = true
-                    },
-                )
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            CustomButton(
+                text = "Accept selected offers",
+                enabled = true, // transport != null && accommodation.keys.size == accommodationOffers.keys.size,
+                onClick = {
+                    onOffersAccepted(listOf(transport!!), accommodation.values.toList())
+                    showLoader = true
+                },
+            )
+
+            HorizontalDivider()
+
+            CustomButton(
+                text = "Reject all offers",
+                onClick = {
+                    onOffersRejected()
+                    showLoader = true
+                },
+            )
         }
 
         AnimatedVisibility(
@@ -313,80 +323,80 @@ private fun PartnerOfferReviewScreenPreview() {
         accommodationOffers =
             mapOf(
                 1L to
-                    listOf(
-                        PartnerOfferItem(
-                            id = 1,
-                            partnerId = 1,
-                            processKey = 2,
-                            partnerName = "Hilton",
-                            pricePerPerson = 500,
-                            cityId = 2,
-                            cityName = "Paris",
+                        listOf(
+                            PartnerOfferItem(
+                                id = 1,
+                                partnerId = 1,
+                                processKey = 2,
+                                partnerName = "Hilton",
+                                pricePerPerson = 500,
+                                cityId = 2,
+                                cityName = "Paris",
+                            ),
+                            PartnerOfferItem(
+                                id = 1,
+                                partnerId = 1,
+                                processKey = 2,
+                                partnerName = "Westin",
+                                pricePerPerson = 300,
+                                cityId = 2,
+                                cityName = "Paris",
+                            ),
                         ),
-                        PartnerOfferItem(
-                            id = 1,
-                            partnerId = 1,
-                            processKey = 2,
-                            partnerName = "Westin",
-                            pricePerPerson = 300,
-                            cityId = 2,
-                            cityName = "Paris",
-                        ),
-                    ),
                 2L to
-                    listOf(
-                        PartnerOfferItem(
-                            id = 1,
-                            partnerId = 1,
-                            processKey = 2,
-                            partnerName = "Hilton",
-                            pricePerPerson = 300,
-                            cityId = 2,
-                            cityName = "Paris",
+                        listOf(
+                            PartnerOfferItem(
+                                id = 1,
+                                partnerId = 1,
+                                processKey = 2,
+                                partnerName = "Hilton",
+                                pricePerPerson = 300,
+                                cityId = 2,
+                                cityName = "Paris",
+                            ),
+                            PartnerOfferItem(
+                                id = 1,
+                                partnerId = 1,
+                                processKey = 2,
+                                partnerName = "Westin",
+                                pricePerPerson = 500,
+                                cityId = 2,
+                                cityName = "Paris",
+                            ),
+                            PartnerOfferItem(
+                                id = 1,
+                                partnerId = 1,
+                                processKey = 2,
+                                partnerName = "Drugi",
+                                pricePerPerson = 300,
+                                cityId = 2,
+                                cityName = "Paris",
+                            ),
                         ),
-                        PartnerOfferItem(
-                            id = 1,
-                            partnerId = 1,
-                            processKey = 2,
-                            partnerName = "Westin",
-                            pricePerPerson = 500,
-                            cityId = 2,
-                            cityName = "Paris",
-                        ),
-                        PartnerOfferItem(
-                            id = 1,
-                            partnerId = 1,
-                            processKey = 2,
-                            partnerName = "Drugi",
-                            pricePerPerson = 300,
-                            cityId = 2,
-                            cityName = "Paris",
-                        ),
-                    ),
             ),
         transportOffers =
             mapOf(
                 1L to
-                    listOf(
-                        PartnerOfferItem(
-                            id = 1,
-                            partnerId = 1,
-                            processKey = 2,
-                            partnerName = "Prvi",
-                            pricePerPerson = 300,
-                            cityId = 2,
-                            cityName = "Paris",
+                        listOf(
+                            PartnerOfferItem(
+                                id = 1,
+                                partnerId = 1,
+                                processKey = 2,
+                                partnerName = "Prvi",
+                                pricePerPerson = 300,
+                                cityId = 2,
+                                cityName = "Paris",
+                            ),
+                            PartnerOfferItem(
+                                id = 1,
+                                partnerId = 1,
+                                processKey = 2,
+                                partnerName = "Drugi",
+                                pricePerPerson = 300,
+                                cityId = 2,
+                                cityName = "Paris",
+                            ),
                         ),
-                        PartnerOfferItem(
-                            id = 1,
-                            partnerId = 1,
-                            processKey = 2,
-                            partnerName = "Drugi",
-                            pricePerPerson = 300,
-                            cityId = 2,
-                            cityName = "Paris",
-                        ),
-                    ),
             ),
         onOffersAccepted = { _, _ -> },
         onOffersRejected = {},

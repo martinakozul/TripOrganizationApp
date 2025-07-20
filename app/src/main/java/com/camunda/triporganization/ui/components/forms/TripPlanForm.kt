@@ -11,18 +11,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Create
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -41,6 +41,7 @@ import com.camunda.triporganization.R
 import com.camunda.triporganization.model.CitiesData
 import com.camunda.triporganization.model.TransportationType
 import com.camunda.triporganization.model.Trip
+import com.camunda.triporganization.ui.components.CustomButton
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.SubmitLoader
 import com.camunda.triporganization.ui.theme.Colors.primaryContainer
@@ -57,7 +58,7 @@ fun TripPlanForm(
     val cities = trip.cities.sortedBy { it.order }
 
     var tripPlan by remember {
-        mutableStateOf<List<List<String>>>(
+        mutableStateOf(
             cities.map { item ->
                 val parts = item.plan.split(";")
                 val count = if (item.daysSpent == 0) 1 else item.daysSpent
@@ -82,16 +83,13 @@ fun TripPlanForm(
                 modifier
                     .padding(innerPadding)
                     .fillMaxSize()
-                    .padding(16.dp),
         ) {
             LazyColumn(
                 modifier =
                     Modifier
-                        .shadow(2.dp, shape = RoundedCornerShape(8.dp))
-                        .background(
-                            primaryContainer,
-                            shape = RoundedCornerShape(8.dp),
-                        ).padding(horizontal = 8.dp),
+                        .weight(1f)
+                        .shadow(2.dp)
+                        .background(primaryContainer),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 contentPadding = PaddingValues(8.dp),
@@ -226,24 +224,27 @@ fun TripPlanForm(
                 }
 
                 item {
-                    Button(
-                        onClick = {
-                            showLoader = true
-                            onSubmitClicked(
-                                cities.map { city ->
-                                    city.copy(
-                                        plan = tripPlan[city.order - 1].joinToString(";"),
-                                        includedActivities = includedActivities.map { "${it.name} (€${it.price})" },
-                                        extraActivities = extraActivities.map { "${it.name} (€${it.price})" },
-                                    )
-                                },
-                            )
-                        },
-                    ) {
-                        Text("Submit itinerary")
-                    }
+                    Spacer(
+                        modifier = Modifier.height(48.dp)
+                    )
                 }
             }
+
+            CustomButton(
+                text = "Submit itinerary",
+                onClick = {
+                    showLoader = true
+                    onSubmitClicked(
+                        cities.map { city ->
+                            city.copy(
+                                plan = tripPlan[city.order - 1].joinToString(";"),
+                                includedActivities = includedActivities.map { "${it.name} (€${it.price})" },
+                                extraActivities = extraActivities.map { "${it.name} (€${it.price})" },
+                            )
+                        },
+                    )
+                },
+            )
         }
 
         AnimatedVisibility(

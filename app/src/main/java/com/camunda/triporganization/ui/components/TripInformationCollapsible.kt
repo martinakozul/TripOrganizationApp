@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -51,13 +50,10 @@ fun TripInformationCollapsible(
                 .fillMaxWidth()
                 .clickable {
                     showTripInformation = !showTripInformation
-                }.shadow(
-                    2.dp,
-                    shape = RoundedCornerShape(8.dp),
-                ).background(
-                    primaryContainer,
-                    shape = RoundedCornerShape(8.dp),
-                ).padding(16.dp),
+                }
+                .shadow(2.dp)
+                .background(primaryContainer)
+                .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Row(
