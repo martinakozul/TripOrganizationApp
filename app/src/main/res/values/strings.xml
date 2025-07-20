@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">TripOrganization</string>
+
+    <string name="com_auth0_domain">dev-ow7jzpqrkfnjnz41.us.auth0.com</string>
+    <string name="com_auth0_client_id">WrUYvufrcXOFjib80lKFSzKMGPMFq2gc</string>
 </resources>

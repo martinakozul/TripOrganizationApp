@@ -91,7 +91,7 @@ fun AssignGuideScreen(
         ) {
             SubmitLoader(
                 lottieRes = R.raw.suitcase_lottie,
-                text = "Guide assigned! Hang on tight while they define trip itinerary"
+                text = "Guide for the trip assigned. Hang on tight, partner offers will be coming in soon."
             )
         }
     }

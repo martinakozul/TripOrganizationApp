@@ -17,10 +17,10 @@ import retrofit2.http.Query
 interface TripService {
 
     @POST("/user/login")
-    suspend fun userLogIn(@Query("username") username: String, @Query("password") password: String): Response<UserLogInResponse>
+    suspend fun userLogIn(@Body user: UserLogInResponse): Response<Boolean>
 
     @POST("/trip/create")
-    suspend fun createTripInstance(@Query("coordinatorId") userId: Long): Response<Long>
+    suspend fun createTripInstance(@Query("coordinatorId") userId: String): Response<Long>
 
     @GET("/trip/{processInstanceKey}")
     suspend fun getTripInformation(@Path("processInstanceKey") processKey: Long): Response<Trip>
@@ -32,7 +32,7 @@ interface TripService {
     suspend fun saveTripCreationData(@Path("processInstanceKey") processKey: Long, @Body tripRequest: Trip)
 
     @GET("/user/{userId}/tasks/all")
-    suspend fun getActiveTripsForUser(@Path("userId") userId: Long): Map<String, List<BasicTaskItem>>
+    suspend fun getActiveTripsForUser(@Path("userId") userId: String): Map<String, List<BasicTaskItem>>
 
     @GET("/offer/trip/{processKey}")
     suspend fun getOffersForTrip(@Path("processKey") processKey: Long): PartnerOfferResponse

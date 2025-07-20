@@ -4,7 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserLogInResponse(
-    val id: Long,
+    val id: String,
+    val username: String,
     val role: UserRole
 )
 

@@ -28,7 +28,7 @@ class TripTilesListViewModel(application: Application) : AndroidViewModel(applic
 
     fun fetchTasks() {
         viewModelScope.launch {
-            val activeTasks = service.getActiveTripsForUser(AppSingleton.userId ?: -1)
+            val activeTasks = service.getActiveTripsForUser(AppSingleton.userId ?: "")
             allTasks.putAll(activeTasks)
             _options.update { activeTasks.keys }
             _selectedType.update { activeTasks.keys.firstOrNull() ?: "" }

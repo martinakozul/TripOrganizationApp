@@ -4,6 +4,6 @@ import com.camunda.triporganization.model.UserRole
 
 object AppSingleton {
 
-    var userId: Long? = null
+    var userId: String? = null
     var userRole: UserRole? = null
 }

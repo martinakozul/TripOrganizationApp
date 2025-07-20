@@ -14,7 +14,7 @@ data class Trip(
     val tripStartDate: Long? = null,
     val tripEndDate: Long? = null,
     val price: Double? = null,
-    val coordinatorId: Long? = AppSingleton.userId,
+    val coordinatorId: String? = AppSingleton.userId,
 )
 
 @Serializable

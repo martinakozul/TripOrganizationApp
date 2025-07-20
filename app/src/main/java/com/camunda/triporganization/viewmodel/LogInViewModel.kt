@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.camunda.triporganization.helper.AppSingleton
+import com.camunda.triporganization.model.UserLogInResponse
+import com.camunda.triporganization.model.UserRole
 import com.camunda.triporganization.network.Network
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,15 +20,18 @@ class LogInViewModel(application: Application) : AndroidViewModel(application) {
 
     val service = Network.tripService
 
-    fun logIn(username: String, password: String) {
+    fun logIn(username: String) {
         viewModelScope.launch {
-            val user = service.userLogIn(username, password)
+            val user = service.userLogIn(
+                UserLogInResponse(
+                    AppSingleton.userId ?: "", username,
+                    AppSingleton.userRole ?: UserRole.GUIDE
+                )
+            )
             if (user.isSuccessful) {
-                AppSingleton.userId = user.body()?.id
-                AppSingleton.userRole = user.body()?.role
                 _roleState.update { true }
             } else {
-               // TODO show snackbar
+                // TODO show snackbar
             }
 
         }

@@ -287,7 +287,7 @@ private fun TripPlanFormPreview() {
             tripStartDate = System.currentTimeMillis(),
             tripEndDate = System.currentTimeMillis(),
             price = null,
-            coordinatorId = 1
+            coordinatorId = "1"
         ),
         onSubmitClicked = {},
         onBackPressed = {}

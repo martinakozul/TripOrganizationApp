@@ -18,6 +18,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders.put("auth0Domain", "@string/com_auth0_domain")
+        manifestPlaceholders.put("auth0Scheme", "demo")
     }
 
     buildTypes {
@@ -39,6 +41,7 @@ android {
     buildFeatures {
         compose = true
     }
+
 }
 
 dependencies {
@@ -76,4 +79,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.lottie.compose)
+
+    implementation(libs.auth0)
+    implementation(libs.jwtdecode)
+
 }

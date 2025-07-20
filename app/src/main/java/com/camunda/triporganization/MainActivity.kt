@@ -56,6 +56,7 @@ fun TripOrganizationScreen() {
 
         composable(NavigationScreen.TripList.route) {
             TripList(
+                onLoggedOut = { navController.navigateUp() },
                 onNavigateToCreateForm = { tripId ->
                     navController.navigate(NavigationScreen.TripCreationForm.route + "/$tripId")
                 },

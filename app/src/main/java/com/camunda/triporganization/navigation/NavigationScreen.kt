@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -61,16 +62,16 @@ fun LogIn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LogInForm(onLogInClicked = { username, password ->
-            viewModel.logIn(username, password)
-        })
+        LogInForm(onLoggedIn = {viewModel.logIn(it)})
     }
 }
 
 @Composable
 fun TripList(
+    onLoggedOut: () -> Unit,
     onNavigateToCreateForm: (Long) -> Unit,
     onNavigateToReviewOffers: (Long) -> Unit,
     onNavigateToAssignGuideForm: (Long) -> Unit,
@@ -104,6 +105,7 @@ fun TripList(
         startedProcesses = startedProcesses.value ?: listOf(),
         taskTypes = taskTypes.value,
         selectedType = selectedType.value,
+        onLoggedOut = onLoggedOut,
         onAction = { action ->
             when (action) {
                 is TripListAction.AssignGuideAction -> {

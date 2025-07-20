@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,9 +26,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.auth0.android.Auth0
+import com.auth0.android.provider.WebAuthProvider
 import com.camunda.triporganization.helper.AppSingleton
+import com.camunda.triporganization.helper.Auth0Helper
 import com.camunda.triporganization.model.BasicTaskItem
 import com.camunda.triporganization.model.UserRole
 
@@ -37,9 +42,29 @@ fun TripTilesList(
     taskTypes: Set<String>,
     selectedType: String,
     onAction: (TripListAction) -> Unit,
+    onLoggedOut: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
     Scaffold(
+        bottomBar = {
+            Row(
+                modifier = Modifier.heightIn(min = 48.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Home",
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    text = "Log Out",
+                    modifier = Modifier.weight(1f).clickable{
+                        Auth0Helper.logOut(context, onLoggedOut = onLoggedOut)
+                    }
+                )
+            }
+        },
         floatingActionButton = {
             if (AppSingleton.userRole == UserRole.COORDINATOR) {
                 Row(
@@ -175,6 +200,7 @@ private fun TripTilesListPreview() {
             "Publish trip"
         ),
         selectedType = taskType,
+        onLoggedOut = {},
         onAction = { action ->
             when (action) {
                 is TripListAction.AssignGuideAction -> {}

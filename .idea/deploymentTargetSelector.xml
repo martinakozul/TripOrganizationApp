@@ -21,6 +21,14 @@
       </SelectionState>
       <SelectionState runConfigName="TripCreationFormPreview">
         <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2025-05-25T13:10:27.895579Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/martina/.android/avd/Pixel_5_API_33.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
     </selectionStates>
   </component>
