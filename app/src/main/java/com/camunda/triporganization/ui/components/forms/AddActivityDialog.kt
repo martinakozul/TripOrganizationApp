@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.camunda.triporganization.ui.components.CustomCheckbox
+import com.camunda.triporganization.ui.theme.AppTypography
 
 @Composable
 fun AddActivityDialog(
@@ -31,7 +32,12 @@ fun AddActivityDialog(
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        title = { Text("Add activity") },
+        title = {
+            Text(
+                style = AppTypography.displaySmall,
+                text = "Add activity"
+            )
+        },
         text = {
             Column {
                 Row(
@@ -45,7 +51,7 @@ fun AddActivityDialog(
                         modifier = Modifier.weight(2f),
                     )
                     OutlinedTextField(
-                        value = if (price != null) price.toString() else "",
+                        value = price?.toString() ?: "",
                         onValueChange = { newPrice ->
                             price = newPrice.toDoubleOrNull()
                         },
