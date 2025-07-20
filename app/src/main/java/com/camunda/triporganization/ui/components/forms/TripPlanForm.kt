@@ -1,6 +1,5 @@
 package com.camunda.triporganization.ui.components.forms
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -25,7 +24,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,6 +43,7 @@ import com.camunda.triporganization.model.TransportationType
 import com.camunda.triporganization.model.Trip
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.SubmitLoader
+import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 
 @Composable
 fun TripPlanForm(
@@ -88,7 +87,7 @@ fun TripPlanForm(
                 modifier = Modifier
                     .shadow(2.dp, shape = RoundedCornerShape(8.dp))
                     .background(
-                        MaterialTheme.colorScheme.primaryContainer,
+                       primaryContainer,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(horizontal = 8.dp),
@@ -105,7 +104,6 @@ fun TripPlanForm(
                     )
 
                     repeat(city.daysSpent.coerceAtLeast(1)) { i ->
-                        Log.e("MARIN", "${city.cityName} $i ${tripPlan[city.order - 1]}")
                         OutlinedTextField(
                             value = tripPlan[city.order - 1][(i).coerceAtLeast(0)],
                             minLines = 5,

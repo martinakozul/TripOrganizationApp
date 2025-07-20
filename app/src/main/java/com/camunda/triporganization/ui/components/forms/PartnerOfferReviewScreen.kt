@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,9 +41,14 @@ import com.camunda.triporganization.model.CitiesData
 import com.camunda.triporganization.model.PartnerOfferItem
 import com.camunda.triporganization.model.TransportationType
 import com.camunda.triporganization.model.Trip
+import com.camunda.triporganization.ui.components.CustomButton
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.SubmitLoader
 import com.camunda.triporganization.ui.components.TripInformationCollapsible
+import com.camunda.triporganization.ui.theme.Colors.onPrimary
+import com.camunda.triporganization.ui.theme.Colors.onSurface
+import com.camunda.triporganization.ui.theme.Colors.primary
+import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 
 @Composable
 fun PartnerOfferReviewScreen(
@@ -89,7 +93,7 @@ fun PartnerOfferReviewScreen(
                         .fillMaxWidth()
                         .shadow(2.dp, shape = RoundedCornerShape(8.dp))
                         .background(
-                            MaterialTheme.colorScheme.primaryContainer,
+                            primaryContainer,
                             shape = RoundedCornerShape(8.dp)
                         )
                         .padding(vertical = 8.dp)
@@ -110,7 +114,7 @@ fun PartnerOfferReviewScreen(
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 8.dp)
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(MaterialTheme.colorScheme.onPrimary)
+                                    .background(onPrimary)
                                     .width(200.dp)
                                     .padding(vertical = 4.dp, horizontal = 8.dp)
                             ) {
@@ -127,9 +131,9 @@ fun PartnerOfferReviewScreen(
                                             }
                                             .background(
                                                 if (offer == transport) {
-                                                    MaterialTheme.colorScheme.primary
+                                                    primary
                                                 } else {
-                                                    MaterialTheme.colorScheme.onPrimary
+                                                    onPrimary
                                                 }
                                             )
                                             .padding(vertical = 8.dp, horizontal = 4.dp)
@@ -138,9 +142,9 @@ fun PartnerOfferReviewScreen(
                                             style = MaterialTheme.typography.bodyMedium,
                                             text = offer.partnerName,
                                             color = if (offer == transport) {
-                                                MaterialTheme.colorScheme.onPrimary
+                                                onPrimary
                                             } else {
-                                                MaterialTheme.colorScheme.onSurface
+                                                onSurface
                                             }
                                         )
                                         Spacer(modifier = Modifier.weight(1f))
@@ -148,9 +152,9 @@ fun PartnerOfferReviewScreen(
                                             style = MaterialTheme.typography.labelLarge,
                                             text = offer.pricePerPerson.toString(),
                                             color = if (offer == transport) {
-                                                MaterialTheme.colorScheme.onPrimary
+                                                onPrimary
                                             } else {
-                                                MaterialTheme.colorScheme.onSurface
+                                                onSurface
                                             }
                                         )
                                     }
@@ -173,7 +177,7 @@ fun PartnerOfferReviewScreen(
                         .fillMaxWidth()
                         .shadow(2.dp, shape = RoundedCornerShape(8.dp))
                         .background(
-                            MaterialTheme.colorScheme.primaryContainer,
+                            primaryContainer,
                             shape = RoundedCornerShape(8.dp)
                         )
                         .padding(vertical = 8.dp)
@@ -194,7 +198,7 @@ fun PartnerOfferReviewScreen(
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 8.dp)
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(MaterialTheme.colorScheme.onPrimary)
+                                    .background(onPrimary)
                                     .width(200.dp)
                                     .padding(vertical = 4.dp, horizontal = 8.dp)
                             ) {
@@ -213,9 +217,9 @@ fun PartnerOfferReviewScreen(
                                             }
                                             .background(
                                                 if (offer == accommodation[cityOffers.key]) {
-                                                    MaterialTheme.colorScheme.primary
+                                                    primary
                                                 } else {
-                                                    MaterialTheme.colorScheme.onPrimary
+                                                    onPrimary
                                                 }
                                             )
                                             .padding(vertical = 8.dp, horizontal = 4.dp)
@@ -224,9 +228,9 @@ fun PartnerOfferReviewScreen(
                                             style = MaterialTheme.typography.bodyMedium,
                                             text = offer.partnerName,
                                             color = if (offer == accommodation[cityOffers.key]) {
-                                                MaterialTheme.colorScheme.onPrimary
+                                                onPrimary
                                             } else {
-                                                MaterialTheme.colorScheme.onSurface
+                                                onSurface
                                             }
                                         )
                                         Spacer(modifier = Modifier.weight(1f))
@@ -234,9 +238,9 @@ fun PartnerOfferReviewScreen(
                                             style = MaterialTheme.typography.labelLarge,
                                             text = offer.pricePerPerson.toString(),
                                             color = if (offer == accommodation[cityOffers.key]) {
-                                                MaterialTheme.colorScheme.onPrimary
+                                                onPrimary
                                             } else {
-                                                MaterialTheme.colorScheme.onSurface
+                                                onSurface
                                             }
                                         )
                                     }
@@ -254,24 +258,22 @@ fun PartnerOfferReviewScreen(
                     }
                 }
 
-                Button(
+                CustomButton(
+                    text = "Accept selected offers",
                     enabled = true, // transport != null && accommodation.keys.size == accommodationOffers.keys.size,
                     onClick = {
                         onOffersAccepted(listOf(transport!!), accommodation.values.toList())
                         showLoader = true
                     }
-                ) {
-                    Text(text = "Accept selected offers")
-                }
+                )
 
-                Button(
+                CustomButton(
+                    text = "Reject all offers",
                     onClick = {
                         onOffersRejected()
                         showLoader = true
                     }
-                ) {
-                    Text(text = "Reject all offers")
-                }
+                )
             }
         }
 

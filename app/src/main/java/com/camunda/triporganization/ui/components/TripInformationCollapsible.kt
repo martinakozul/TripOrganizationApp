@@ -35,6 +35,8 @@ import com.camunda.triporganization.helper.DateHelper
 import com.camunda.triporganization.model.CitiesData
 import com.camunda.triporganization.model.TransportationType
 import com.camunda.triporganization.model.Trip
+import com.camunda.triporganization.ui.theme.Colors.onPrimaryContainer
+import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 
 @Composable
 fun TripInformationCollapsible(
@@ -54,7 +56,7 @@ fun TripInformationCollapsible(
                 shape = RoundedCornerShape(8.dp)
             )
             .background(
-                MaterialTheme.colorScheme.primaryContainer,
+                primaryContainer,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(16.dp),
@@ -63,7 +65,10 @@ fun TripInformationCollapsible(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Trip Information")
+            Text(
+                color = onPrimaryContainer,
+                text = "Trip Information"
+            )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 modifier = Modifier

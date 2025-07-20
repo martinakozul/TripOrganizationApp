@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.camunda.triporganization.ui.theme.Colors.onPrimary
+import com.camunda.triporganization.ui.theme.Colors.primary
 
 @Composable
 fun CustomTopBar(
@@ -26,7 +28,7 @@ fun CustomTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(primary)
             .padding(horizontal = 8.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -39,12 +41,12 @@ fun CustomTopBar(
                 },
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onPrimary
+            tint = onPrimary
         )
         Text(
             modifier = Modifier.padding(start = 8.dp),
             text = title,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = onPrimary,
             style = MaterialTheme.typography.titleMedium
         )
     }

@@ -8,18 +8,10 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,8 +25,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.camunda.triporganization.R
+import com.camunda.triporganization.ui.components.CustomButton
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.SubmitLoader
+import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 
 @Composable
 fun AssignGuideScreen(
@@ -65,23 +59,20 @@ fun AssignGuideScreen(
                     .fillMaxWidth()
                     .shadow(2.dp, shape = RoundedCornerShape(8.dp))
                     .background(
-                        MaterialTheme.colorScheme.primaryContainer,
+                        primaryContainer,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(16.dp)
             )
 
-            Button(
+            CustomButton(
+                text = "Assign guide",
                 enabled = guide != null,
                 onClick = {
                     showLoader = true
                     assignGuide(guide ?: "")
                 }
-            ) {
-                Text(
-                    text = "Assign guide"
-                )
-            }
+            )
         }
 
         AnimatedVisibility(

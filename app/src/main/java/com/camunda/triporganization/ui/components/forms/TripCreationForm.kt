@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -44,9 +43,11 @@ import com.camunda.triporganization.helper.DateHelper
 import com.camunda.triporganization.model.CitiesData
 import com.camunda.triporganization.model.TransportationType
 import com.camunda.triporganization.model.Trip
+import com.camunda.triporganization.ui.components.CustomButton
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.DateRangePickerModal
 import com.camunda.triporganization.ui.components.SubmitLoader
+import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 import com.camunda.triporganization.viewmodel.TripWrapper
 import java.util.concurrent.TimeUnit
 
@@ -72,9 +73,9 @@ fun TripCreationForm(
     var maxTravelers by remember { mutableIntStateOf(trip?.maxTravelers ?: 0) }
     var datePickerShown by remember { mutableStateOf(false) }
     var tripDate by remember { mutableStateOf<Pair<Long, Long>?>(null) }
-    var transportationType by remember { mutableStateOf<TransportationType?>(trip?.transportation) }
+    var transportationType by remember { mutableStateOf(trip?.transportation) }
 
-    var createEnabled by remember { mutableStateOf<Boolean>(false) }
+    var createEnabled by remember { mutableStateOf(false) }
 
     var showDaysInputDialog by remember { mutableStateOf<Int?>(null) }
     var tripLength by remember { mutableIntStateOf(0) }
@@ -97,7 +98,7 @@ fun TripCreationForm(
                     .padding(8.dp)
                     .shadow(2.dp, shape = RoundedCornerShape(8.dp))
                     .background(
-                        MaterialTheme.colorScheme.primaryContainer,
+                        primaryContainer,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(16.dp),
@@ -239,7 +240,8 @@ fun TripCreationForm(
                 }
             }
 
-            Button(
+            CustomButton(
+                text = "Save changes",
                 onClick = {
                     onSaveChanges(
                         Trip(
@@ -254,10 +256,9 @@ fun TripCreationForm(
                         )
                     )
                 }
-            ) {
-                Text(text = "Save changes")
-            }
-            Button(
+            )
+            CustomButton(
+                text = "Create trip",
                 enabled = createEnabled,
                 onClick = {
                     onCreateTrip(
@@ -273,9 +274,7 @@ fun TripCreationForm(
                         )
                     )
                 }
-            ) {
-                Text(text = "Create trip")
-            }
+            )
         }
 
         showDaysInputDialog?.let { i ->

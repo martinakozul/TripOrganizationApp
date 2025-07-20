@@ -8,13 +8,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,16 +26,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.auth0.android.Auth0
-import com.auth0.android.provider.WebAuthProvider
 import com.camunda.triporganization.helper.AppSingleton
 import com.camunda.triporganization.helper.Auth0Helper
 import com.camunda.triporganization.model.BasicTaskItem
 import com.camunda.triporganization.model.UserRole
+import com.camunda.triporganization.ui.theme.Colors.onPrimary
+import com.camunda.triporganization.ui.theme.Colors.onPrimaryContainer
+import com.camunda.triporganization.ui.theme.Colors.primary
+import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 
 @Composable
 fun TripTilesList(
@@ -50,18 +55,35 @@ fun TripTilesList(
     Scaffold(
         bottomBar = {
             Row(
-                modifier = Modifier.heightIn(min = 48.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier
+                    .shadow(2.dp)
+                    .background(primary)
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
+                    color = onPrimary,
+                    textAlign = TextAlign.Center,
                     text = "Home",
                     modifier = Modifier.weight(1f)
                 )
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(48.dp)
+                        .background(onPrimary)
+                )
                 Text(
+                    color = onPrimary,
+                    textAlign = TextAlign.Center,
                     text = "Log Out",
-                    modifier = Modifier.weight(1f).clickable{
-                        Auth0Helper.logOut(context, onLoggedOut = onLoggedOut)
-                    }
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            Auth0Helper.logOut(context, onLoggedOut = onLoggedOut)
+                        }
                 )
             }
         },
@@ -97,15 +119,15 @@ fun TripTilesList(
                         Text(
                             modifier = Modifier
                                 .background(
-                                    if (selectedType == type) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
-                                    shape = RoundedCornerShape(8.dp)
+                                    if (selectedType == type) primary else primaryContainer,
+                                    shape = RoundedCornerShape(4.dp)
                                 )
-                                .padding(vertical = 4.dp, horizontal = 8.dp)
+                                .padding(8.dp)
                                 .clickable {
                                     onAction.invoke(TripListAction.ChangeTaskTypeAction(type))
                                 },
                             text = type,
-                            color = if (selectedType == type) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                            color = if (selectedType == type) onPrimary else onPrimaryContainer
                         )
                     }
                 }

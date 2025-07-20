@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.camunda.triporganization.helper.Auth0Helper
+import com.camunda.triporganization.ui.components.CustomButton
 
 @Composable
 fun LogInForm(
@@ -17,12 +18,11 @@ fun LogInForm(
 ) {
     val context = LocalContext.current
 
-    Button(
+    CustomButton(
+        text = "Log in",
         modifier = modifier,
         onClick = { Auth0Helper.logIn(context, onLoggedIn) }
-    ) {
-        Text("Log in")
-    }
+    )
 }
 
 @Preview(showBackground = true)

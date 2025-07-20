@@ -33,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,10 +41,12 @@ import com.camunda.triporganization.helper.AppSingleton
 import com.camunda.triporganization.model.CitiesData
 import com.camunda.triporganization.model.TransportationType
 import com.camunda.triporganization.model.Trip
+import com.camunda.triporganization.ui.components.CustomButton
 import com.camunda.triporganization.ui.components.CustomCheckbox
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.SubmitLoader
 import com.camunda.triporganization.ui.components.TripInformationCollapsible
+import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 
 @Composable
 fun TripPlanReviewForm(
@@ -89,7 +90,7 @@ fun TripPlanReviewForm(
                         shape = RoundedCornerShape(8.dp)
                     )
                     .background(
-                        MaterialTheme.colorScheme.primaryContainer,
+                        primaryContainer,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(16.dp),
@@ -149,7 +150,7 @@ fun TripPlanReviewForm(
                         shape = RoundedCornerShape(8.dp)
                     )
                     .background(
-                        MaterialTheme.colorScheme.primaryContainer,
+                        primaryContainer,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(16.dp),
@@ -184,17 +185,14 @@ fun TripPlanReviewForm(
                 }
             }
 
-            Button(
+            CustomButton(
+                text = if (isApproved) "Publish trip" else "Send back to guide",
                 onClick = {
                     if (isApproved) onPublishClicked(price ?: 100.0) else onRejectClicked(note)
                     showLoader = true
                 },
                 enabled = (!isApproved && note.isNotEmpty()) || (price != null && isApproved)
-            ) {
-                Text(
-                    text = if (isApproved) "Publish trip" else "Send back to guide"
-                )
-            }
+            )
         }
         AnimatedVisibility(
             visible = showLoader,
