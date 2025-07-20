@@ -55,11 +55,12 @@ fun AssignGuideScreen(
                 onItemSelected = {
                     guide = it
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(2.dp)
-                    .background(primaryContainer)
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .shadow(2.dp)
+                        .background(primaryContainer)
+                        .padding(16.dp),
             )
 
             Spacer(modifier = Modifier.weight(1f))

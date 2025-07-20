@@ -50,8 +50,7 @@ fun TripInformationCollapsible(
                 .fillMaxWidth()
                 .clickable {
                     showTripInformation = !showTripInformation
-                }
-                .shadow(2.dp)
+                }.shadow(2.dp)
                 .background(primaryContainer)
                 .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),

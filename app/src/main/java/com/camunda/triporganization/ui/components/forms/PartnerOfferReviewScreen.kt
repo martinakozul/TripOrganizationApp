@@ -142,15 +142,13 @@ fun PartnerOfferReviewScreen(
                                                 .fillMaxWidth()
                                                 .clickable {
                                                     transport = offer
-                                                }
-                                                .background(
+                                                }.background(
                                                     if (offer == transport) {
                                                         primary
                                                     } else {
                                                         onPrimary
                                                     },
-                                                )
-                                                .padding(vertical = 8.dp, horizontal = 4.dp),
+                                                ).padding(vertical = 8.dp, horizontal = 4.dp),
                                     ) {
                                         Text(
                                             style = MaterialTheme.typography.bodyMedium,
@@ -194,8 +192,7 @@ fun PartnerOfferReviewScreen(
                         Modifier
                             .fillMaxWidth()
                             .shadow(2.dp)
-                            .background(primaryContainer
-                            )
+                            .background(primaryContainer)
                             .padding(vertical = 8.dp),
                 ) {
                     Text(
@@ -233,15 +230,13 @@ fun PartnerOfferReviewScreen(
                                                         accommodation.toMutableMap().apply {
                                                             this[cityOffers.key] = offer
                                                         }
-                                                }
-                                                .background(
+                                                }.background(
                                                     if (offer == accommodation[cityOffers.key]) {
                                                         primary
                                                     } else {
                                                         onPrimary
                                                     },
-                                                )
-                                                .padding(vertical = 8.dp, horizontal = 4.dp),
+                                                ).padding(vertical = 8.dp, horizontal = 4.dp),
                                     ) {
                                         Text(
                                             style = MaterialTheme.typography.bodyMedium,
@@ -323,80 +318,80 @@ private fun PartnerOfferReviewScreenPreview() {
         accommodationOffers =
             mapOf(
                 1L to
-                        listOf(
-                            PartnerOfferItem(
-                                id = 1,
-                                partnerId = 1,
-                                processKey = 2,
-                                partnerName = "Hilton",
-                                pricePerPerson = 500,
-                                cityId = 2,
-                                cityName = "Paris",
-                            ),
-                            PartnerOfferItem(
-                                id = 1,
-                                partnerId = 1,
-                                processKey = 2,
-                                partnerName = "Westin",
-                                pricePerPerson = 300,
-                                cityId = 2,
-                                cityName = "Paris",
-                            ),
+                    listOf(
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Hilton",
+                            pricePerPerson = 500,
+                            cityId = 2,
+                            cityName = "Paris",
                         ),
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Westin",
+                            pricePerPerson = 300,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                    ),
                 2L to
-                        listOf(
-                            PartnerOfferItem(
-                                id = 1,
-                                partnerId = 1,
-                                processKey = 2,
-                                partnerName = "Hilton",
-                                pricePerPerson = 300,
-                                cityId = 2,
-                                cityName = "Paris",
-                            ),
-                            PartnerOfferItem(
-                                id = 1,
-                                partnerId = 1,
-                                processKey = 2,
-                                partnerName = "Westin",
-                                pricePerPerson = 500,
-                                cityId = 2,
-                                cityName = "Paris",
-                            ),
-                            PartnerOfferItem(
-                                id = 1,
-                                partnerId = 1,
-                                processKey = 2,
-                                partnerName = "Drugi",
-                                pricePerPerson = 300,
-                                cityId = 2,
-                                cityName = "Paris",
-                            ),
+                    listOf(
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Hilton",
+                            pricePerPerson = 300,
+                            cityId = 2,
+                            cityName = "Paris",
                         ),
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Westin",
+                            pricePerPerson = 500,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Drugi",
+                            pricePerPerson = 300,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                    ),
             ),
         transportOffers =
             mapOf(
                 1L to
-                        listOf(
-                            PartnerOfferItem(
-                                id = 1,
-                                partnerId = 1,
-                                processKey = 2,
-                                partnerName = "Prvi",
-                                pricePerPerson = 300,
-                                cityId = 2,
-                                cityName = "Paris",
-                            ),
-                            PartnerOfferItem(
-                                id = 1,
-                                partnerId = 1,
-                                processKey = 2,
-                                partnerName = "Drugi",
-                                pricePerPerson = 300,
-                                cityId = 2,
-                                cityName = "Paris",
-                            ),
+                    listOf(
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Prvi",
+                            pricePerPerson = 300,
+                            cityId = 2,
+                            cityName = "Paris",
                         ),
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Drugi",
+                            pricePerPerson = 300,
+                            cityId = 2,
+                            cityName = "Paris",
+                        ),
+                    ),
             ),
         onOffersAccepted = { _, _ -> },
         onOffersRejected = {},

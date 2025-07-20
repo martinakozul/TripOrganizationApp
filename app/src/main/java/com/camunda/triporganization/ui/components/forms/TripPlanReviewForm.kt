@@ -76,7 +76,7 @@ fun TripPlanReviewForm(
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().background(surface)
+            modifier = Modifier.fillMaxSize().background(surface),
         ) {
             Column(
                 modifier =

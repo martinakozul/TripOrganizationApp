@@ -36,7 +36,7 @@ fun LogInForm(
     Column(
         modifier = modifier.fillMaxSize().background(surface),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.weight(1f))
 

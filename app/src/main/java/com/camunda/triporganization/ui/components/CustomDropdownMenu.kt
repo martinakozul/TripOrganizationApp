@@ -29,7 +29,7 @@ fun CustomDropdownMenu(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Box{
+    Box {
         Row(
             modifier = modifier.clickable { expanded = !expanded },
             verticalAlignment = Alignment.CenterVertically,

@@ -34,14 +34,15 @@ fun CustomButton(
     contentColor: Color = onPrimary,
     shape: Shape = RoundedCornerShape(0.dp),
     textStyle: TextStyle = MaterialTheme.typography.labelLarge,
-    height: Int = 64
+    height: Int = 64,
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier
-            .shadow(2.dp)
-            .height(height.dp)
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .shadow(2.dp)
+                .height(height.dp)
+                .fillMaxWidth(),
         enabled = enabled,
         colors =
             ButtonDefaults.buttonColors(

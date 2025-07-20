@@ -82,7 +82,7 @@ fun TripPlanForm(
             modifier =
                 modifier
                     .padding(innerPadding)
-                    .fillMaxSize()
+                    .fillMaxSize(),
         ) {
             LazyColumn(
                 modifier =
@@ -225,7 +225,7 @@ fun TripPlanForm(
 
                 item {
                     Spacer(
-                        modifier = Modifier.height(48.dp)
+                        modifier = Modifier.height(48.dp),
                     )
                 }
             }
