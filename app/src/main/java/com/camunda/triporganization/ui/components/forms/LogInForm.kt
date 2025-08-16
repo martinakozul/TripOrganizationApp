@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,26 +34,32 @@ fun LogInForm(
 
     val context = LocalContext.current
 
-    Column(
-        modifier = modifier.fillMaxSize().background(surface),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Spacer(modifier = Modifier.weight(1f))
+    Scaffold { padding ->
+        Column(
+            modifier =
+                modifier
+                    .padding(padding)
+                    .fillMaxSize()
+                    .background(surface),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
 
-        LottieAnimation(
-            speed = 0.5f,
-            composition = lottieComposition,
-            iterations = LottieConstants.IterateForever,
-            modifier = Modifier.size(200.dp),
-        )
+            LottieAnimation(
+                speed = 0.5f,
+                composition = lottieComposition,
+                iterations = LottieConstants.IterateForever,
+                modifier = Modifier.size(200.dp),
+            )
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
 
-        CustomButton(
-            text = "Log in",
-            onClick = { Auth0Helper.logIn(context, onLoggedIn) },
-        )
+            CustomButton(
+                text = "Log in",
+                onClick = { Auth0Helper.logIn(context, onLoggedIn) },
+            )
+        }
     }
 }
 

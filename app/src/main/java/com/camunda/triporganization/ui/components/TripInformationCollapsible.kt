@@ -34,6 +34,8 @@ import com.camunda.triporganization.helper.DateHelper
 import com.camunda.triporganization.model.CitiesData
 import com.camunda.triporganization.model.TransportationType
 import com.camunda.triporganization.model.Trip
+import com.camunda.triporganization.ui.theme.AppTypography
+import com.camunda.triporganization.ui.theme.Colors.onPrimary
 import com.camunda.triporganization.ui.theme.Colors.onPrimaryContainer
 import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 
@@ -42,7 +44,7 @@ fun TripInformationCollapsible(
     trip: Trip,
     modifier: Modifier = Modifier,
 ) {
-    var showTripInformation by remember { mutableStateOf(false) }
+    var showTripInformation by remember { mutableStateOf(true) }
 
     Column(
         modifier =
@@ -59,6 +61,7 @@ fun TripInformationCollapsible(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
+                style = AppTypography.labelLarge,
                 color = onPrimaryContainer,
                 text = "Trip Information",
             )
@@ -77,27 +80,50 @@ fun TripInformationCollapsible(
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        color = onPrimaryContainer,
+                        style = AppTypography.bodyMedium,
+                        text = "Trip name:",
+                    )
+                    Text(
+                        style = AppTypography.labelLarge,
+                        text = trip.tripName ?: "",
+                    )
+                }
                 Text(
-                    style = MaterialTheme.typography.bodyMedium,
-                    text = trip.tripName ?: "",
-                )
-                Text(
-                    style = MaterialTheme.typography.labelLarge,
+                    style = AppTypography.labelLarge,
                     text = "${DateHelper.convertMillisToDate(trip.tripStartDate)} - ${
                         DateHelper.convertMillisToDate(trip.tripEndDate)
                     }",
                 )
                 Text(
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = AppTypography.bodyMedium,
                     text = trip.cities.joinToString(" - ") { "${it.cityName} (${it.daysSpent})" },
                 )
-                Text(
-                    text = "Passengers range: ${trip.minTravelers} - ${trip.maxTravelers}",
-                )
-                Text(
-                    style = MaterialTheme.typography.bodyMedium,
-                    text = "Price " + (trip.price ?: "TBD"),
-                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        color = onPrimaryContainer,
+                        style = AppTypography.bodyMedium,
+                        text = "Passengers range:",
+                    )
+                    Text(
+                        style = AppTypography.labelLarge,
+                        text = "${trip.minTravelers} - ${trip.maxTravelers} people",
+                    )
+                }
+
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        color = onPrimaryContainer,
+                        style = AppTypography.bodyMedium,
+                        text = "Price:",
+                    )
+                    Text(
+                        style = AppTypography.labelLarge,
+                        text = if (trip.price != null) trip.price.toString() else "TBD",
+                    )
+                }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,
@@ -133,13 +159,13 @@ private fun TripInformationCollapsiblePreview() {
         trip =
             Trip(
                 id = 1,
-                tripName = "test trip",
+                tripName = "Milano Shopping Spree",
                 cities =
                     listOf(
                         CitiesData(
                             cityId = 1,
-                            cityName = "lala",
-                            daysSpent = 2,
+                            cityName = "Zagreb",
+                            daysSpent = 0,
                             order = 1,
                             plan = "",
                             includedActivities = emptyList(),
@@ -147,16 +173,25 @@ private fun TripInformationCollapsiblePreview() {
                         ),
                         CitiesData(
                             cityId = 1,
-                            cityName = "sd",
+                            cityName = "Milano",
                             daysSpent = 2,
                             order = 2,
                             plan = "",
                             includedActivities = emptyList(),
                             extraActivities = emptyList(),
                         ),
+                        CitiesData(
+                            cityId = 1,
+                            cityName = "Zagreb",
+                            daysSpent = 0,
+                            order = 3,
+                            plan = "",
+                            includedActivities = emptyList(),
+                            extraActivities = emptyList(),
+                        ),
                     ),
-                minTravelers = 10,
-                maxTravelers = 20,
+                minTravelers = 30,
+                maxTravelers = 50,
                 transportation = TransportationType.BUS,
                 tripStartDate = System.currentTimeMillis(),
                 tripEndDate = System.currentTimeMillis(),

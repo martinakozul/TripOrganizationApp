@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -40,6 +41,7 @@ import com.camunda.triporganization.ui.theme.Colors.onPrimary
 import com.camunda.triporganization.ui.theme.Colors.onPrimaryContainer
 import com.camunda.triporganization.ui.theme.Colors.primary
 import com.camunda.triporganization.ui.theme.Colors.primaryContainer
+import com.camunda.triporganization.ui.theme.Colors.surface
 
 @Composable
 fun TripTilesList(
@@ -110,7 +112,13 @@ fun TripTilesList(
             }
         },
     ) { innerPadding ->
-        LazyColumn(modifier = modifier.padding(PaddingValues(bottom = innerPadding.calculateBottomPadding()))) {
+        LazyColumn(
+            modifier =
+                modifier
+                    .fillMaxHeight()
+                    .background(surface)
+                    .padding(PaddingValues(bottom = innerPadding.calculateBottomPadding())),
+        ) {
             item {
                 LazyRow(
                     modifier =
@@ -200,29 +208,29 @@ fun TripTilesList(
 @Preview
 @Composable
 private fun TripTilesListPreview() {
-    var taskType by remember { mutableStateOf("Create trip") }
+    var taskType by remember { mutableStateOf("Review offers") }
     TripTilesList(
         startedProcesses =
             listOf(
                 BasicTaskItem(
                     tripId = 1,
                     taskName = "Create trip",
-                    tripName = "Test create trip",
+                    tripName = "Kapadokija i Antalija iz Zagreba",
                 ),
                 BasicTaskItem(
                     tripId = 1,
                     taskName = "Create trip",
-                    tripName = "Test create trip",
+                    tripName = "Maldivi iz Zagreba",
                 ),
                 BasicTaskItem(
                     tripId = 1,
                     taskName = "Create trip",
-                    tripName = "Test create trip",
+                    tripName = "Kenija Safari i Plaža",
                 ),
                 BasicTaskItem(
                     tripId = 1,
                     taskName = "Review offers",
-                    tripName = "Test create trip",
+                    tripName = "Meksiko iz Zagreba",
                 ),
             ),
         taskTypes =

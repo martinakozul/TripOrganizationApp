@@ -19,6 +19,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.camunda.triporganization.ui.components.CustomCheckbox
 import com.camunda.triporganization.ui.theme.AppTypography
+import com.camunda.triporganization.ui.theme.Colors.onSurface
+import com.camunda.triporganization.ui.theme.Colors.primary
+import com.camunda.triporganization.ui.theme.Colors.secondary
+import com.camunda.triporganization.ui.theme.Colors.surface
+import com.camunda.triporganization.ui.theme.Colors.tertiary
 
 @Composable
 fun AddActivityDialog(
@@ -27,10 +32,13 @@ fun AddActivityDialog(
     onDismiss: () -> Unit,
 ) {
     var activityName by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf<Double?>(tripActivity?.price) }
+    var price by remember { mutableStateOf(tripActivity?.price) }
     var isIncluded by remember { mutableStateOf(tripActivity?.isIncluded == true) }
 
     AlertDialog(
+        containerColor = surface,
+        titleContentColor = onSurface,
+        textContentColor = onSurface,
         onDismissRequest = { onDismiss() },
         title = {
             Text(
@@ -81,12 +89,18 @@ fun AddActivityDialog(
                     )
                 }
             }) {
-                Text("Save")
+                Text(
+                    color = primary,
+                    text = "ADD",
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(
+                    color = secondary,
+                    text = "DISMISS",
+                )
             }
         },
     )

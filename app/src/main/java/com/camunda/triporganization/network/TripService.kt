@@ -34,6 +34,7 @@ interface TripService {
     suspend fun fillTripCreationData(
         @Path("processInstanceKey") processKey: Long,
         @Body tripRequest: Trip,
+        @Query("isGuide") isGuide: Boolean,
     )
 
     @POST("/trip/{processInstanceKey}/saveTripData")

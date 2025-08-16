@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.camunda.triporganization.R
@@ -46,8 +46,12 @@ import com.camunda.triporganization.ui.components.CustomCheckbox
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.SubmitLoader
 import com.camunda.triporganization.ui.components.TripInformationCollapsible
+import com.camunda.triporganization.ui.theme.AppTypography
+import com.camunda.triporganization.ui.theme.Colors.onPrimaryContainer
 import com.camunda.triporganization.ui.theme.Colors.primaryContainer
+import com.camunda.triporganization.ui.theme.Colors.secondary
 import com.camunda.triporganization.ui.theme.Colors.surface
+import kotlin.time.Duration.Companion.days
 
 @Composable
 fun TripPlanReviewForm(
@@ -62,8 +66,6 @@ fun TripPlanReviewForm(
     var note by remember { mutableStateOf("") }
     var price by remember { mutableStateOf<Double?>(null) }
     var isApproved by remember { mutableStateOf(false) }
-
-    var showTripInfo by remember { mutableStateOf(false) }
     var showTripItinerary by remember { mutableStateOf(true) }
     var showLoader by remember { mutableStateOf(false) }
 
@@ -76,18 +78,22 @@ fun TripPlanReviewForm(
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().background(surface),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(surface),
         ) {
             Column(
                 modifier =
                     Modifier
+                        .weight(1f)
                         .padding(innerPadding)
                         .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TripInformationCollapsible(trip = trip)
 
-                HorizontalDivider()
+                HorizontalDivider(Modifier.background(secondary))
 
                 Column(
                     modifier =
@@ -105,7 +111,11 @@ fun TripPlanReviewForm(
                             },
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(text = "Trip itinerary")
+                        Text(
+                            style = AppTypography.labelLarge,
+                            color = onPrimaryContainer,
+                            text = "Trip itinerary",
+                        )
                         Spacer(modifier = Modifier.weight(1f))
                         Icon(
                             modifier =
@@ -121,26 +131,47 @@ fun TripPlanReviewForm(
                         Column(
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
-                            Text(
-                                style = MaterialTheme.typography.bodyMedium,
-                                text = trip.cities.joinToString("\n") { it.plan },
-                            )
-                            Text(
-                                style = MaterialTheme.typography.labelLarge,
-                                text = "Included activities",
-                            )
-                            Text(
-                                style = MaterialTheme.typography.bodyMedium,
-                                text = trip.cities.map { it.includedActivities }.joinToString("\n"),
-                            )
-                            Text(
-                                style = MaterialTheme.typography.labelLarge,
-                                text = "Optional activities",
-                            )
-                            Text(
-                                style = MaterialTheme.typography.bodyMedium,
-                                text = trip.cities.map { it.extraActivities }.joinToString("\n"),
-                            )
+                            repeat(trip.cities.count()) { i ->
+                                val city = trip.cities[i]
+                                Text(
+                                    modifier = Modifier.padding(top = 8.dp),
+                                    style = AppTypography.labelLarge,
+                                    text = city.cityName,
+                                )
+                                Text(
+                                    style = AppTypography.bodyMedium,
+                                    text = city.plan,
+                                )
+
+                                if (city.includedActivities.isNotEmpty()) {
+                                    Text(
+                                        modifier = Modifier.padding(top = 4.dp),
+                                        color = secondary,
+                                        style = AppTypography.labelMedium,
+                                        text = "Included activities",
+                                    )
+
+                                    city.includedActivities.forEach {
+                                        Text(
+                                            text = it,
+                                        )
+                                    }
+                                }
+
+                                if (city.extraActivities.isNotEmpty()) {
+                                    Text(
+                                        modifier = Modifier.padding(top = 4.dp),
+                                        color = secondary,
+                                        style = AppTypography.labelMedium,
+                                        text = "Extra activities",
+                                    )
+                                    city.extraActivities.forEach {
+                                        Text(
+                                            text = it,
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -185,8 +216,6 @@ fun TripPlanReviewForm(
                 }
             }
 
-            Spacer(Modifier.weight(1f))
-
             CustomButton(
                 text = if (isApproved) "Publish trip" else "Send back to guide",
                 onClick = {
@@ -223,28 +252,37 @@ private fun TripPlanReviewFormPreview() {
                     listOf(
                         CitiesData(
                             cityId = 1,
-                            cityName = "lala",
-                            daysSpent = 2,
+                            cityName = "Zagreb",
+                            daysSpent = 0,
                             order = 1,
-                            plan = "dflp\nkjsdka\najsdkajsd",
+                            plan = "Meet up at Velesajam at 6:00, start toward Italy",
                             includedActivities = emptyList(),
                             extraActivities = emptyList(),
                         ),
                         CitiesData(
                             cityId = 1,
-                            cityName = "sd",
+                            cityName = "Milan",
                             daysSpent = 2,
                             order = 2,
-                            plan = "dflp\nkjsdka\najsdkajsd",
+                            plan = "Arrive at Milan in the afternoon hours. Brisk walking tour around the center. Free time until 21:00 then head for the hotel.\nBreakfast at the hotel at 8:00, guided tour around the city. Afternoon free for activities. Meet up and head back to Zagreb at 21:00.",
+                            includedActivities = listOf("Duomo Milan (30€)"),
+                            extraActivities = listOf("The Last Supper (45€)"),
+                        ),
+                        CitiesData(
+                            cityId = 1,
+                            cityName = "Zagreb",
+                            daysSpent = 0,
+                            order = 1,
+                            plan = "Arrive at Zagreb sometime during the night.",
                             includedActivities = emptyList(),
                             extraActivities = emptyList(),
                         ),
                     ),
                 minTravelers = 10,
                 maxTravelers = 20,
-                transportation = TransportationType.PLANE,
+                transportation = TransportationType.BUS,
                 tripStartDate = System.currentTimeMillis(),
-                tripEndDate = System.currentTimeMillis(),
+                tripEndDate = System.currentTimeMillis() + 2.days.inWholeMilliseconds,
                 price = null,
                 coordinatorId = AppSingleton.userId,
             ),

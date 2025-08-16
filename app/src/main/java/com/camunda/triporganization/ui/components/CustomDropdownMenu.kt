@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.camunda.triporganization.ui.theme.AppTypography
 
 @Composable
 fun CustomDropdownMenu(
@@ -35,7 +36,7 @@ fun CustomDropdownMenu(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                style = MaterialTheme.typography.labelLarge,
+                style = AppTypography.labelLarge,
                 text = label,
             )
             Icon(
@@ -71,5 +72,6 @@ private fun CustomDropdownMenuPreview() {
         label = "Add city",
         onItemSelected = {},
         menuItemData = List(5) { "Option ${it + 1}" },
+        modifier = Modifier.padding(16.dp),
     )
 }

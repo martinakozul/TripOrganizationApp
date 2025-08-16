@@ -40,7 +40,7 @@ class TripCreateViewModel(
 
     fun createTrip(trip: Trip) {
         viewModelScope.launch {
-            service.fillTripCreationData(processKey = trip.id, tripRequest = trip)
+            service.fillTripCreationData(processKey = trip.id, tripRequest = trip, true)
         }
     }
 }

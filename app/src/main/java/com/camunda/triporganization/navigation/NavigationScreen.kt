@@ -7,12 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,7 +31,6 @@ import com.camunda.triporganization.viewmodel.PartnerOfferReviewViewModel
 import com.camunda.triporganization.viewmodel.TripCreateViewModel
 import com.camunda.triporganization.viewmodel.TripItineraryViewModel
 import com.camunda.triporganization.viewmodel.TripTilesListViewModel
-import kotlinx.coroutines.delay
 
 sealed class NavigationScreen(
     val route: String,
@@ -60,7 +55,7 @@ fun LogIn(onNavigateToTripList: () -> Unit) {
     val viewModel: LogInViewModel = viewModel()
     val roleState = viewModel.roleState.collectAsState()
 
-    if (roleState.value == true) {
+    if (roleState.value) {
         onNavigateToTripList()
     }
 
@@ -87,9 +82,9 @@ fun TripList(
 ) {
     val viewModel: TripTilesListViewModel = viewModel()
 
-    val startedProcesses = viewModel.processes.collectAsState()
-    val taskTypes = viewModel.options.collectAsState()
-    val selectedType = viewModel.selectedType.collectAsState()
+    val startedProcesses by viewModel.processes.collectAsState()
+    val taskTypes by viewModel.options.collectAsState()
+    val selectedType by viewModel.selectedType.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -110,9 +105,9 @@ fun TripList(
     }
 
     TripTilesList(
-        startedProcesses = startedProcesses.value ?: listOf(),
-        taskTypes = taskTypes.value,
-        selectedType = selectedType.value,
+        startedProcesses = startedProcesses ?: listOf(),
+        taskTypes = taskTypes,
+        selectedType = selectedType,
         onLoggedOut = onLoggedOut,
         onAction = { action ->
             when (action) {
@@ -152,6 +147,7 @@ fun TripList(
 
 @Composable
 fun TripCreationForm(
+    onNavigateToAssignGuideForm: (Long) -> Unit,
     onBackPressed: () -> Unit,
     tripId: Long,
 ) {
@@ -168,6 +164,9 @@ fun TripCreationForm(
             viewModel.createTrip(it)
         },
         onBackPressed = onBackPressed,
+        onNavigateToAssignGuideForm = {
+            onNavigateToAssignGuideForm.invoke(tripId)
+        },
     )
 }
 
@@ -231,11 +230,9 @@ fun AssignGuideForm(
 fun PartnerOffersReview(
     tripId: Long,
     onBackPressed: () -> Unit,
-    onNavigateToAssignGuideForm: () -> Unit,
 ) {
     val viewModel: PartnerOfferReviewViewModel = viewModel()
     val offers = viewModel.offers.collectAsState()
-    var delay by remember { mutableStateOf(false) }
 
     viewModel.getOffers(tripId)
 
@@ -246,7 +243,6 @@ fun PartnerOffersReview(
             accommodationOffers = offers.value?.groupedPartnerOffers?.accommodation ?: emptyMap(),
             onOffersAccepted = { transportOffer, accommodationOffer ->
                 viewModel.acceptOffers(tripId, transportOffer, accommodationOffer)
-                delay = true
             },
             onOffersRejected = {
                 viewModel.rejectAllOffers(tripId)
@@ -257,12 +253,5 @@ fun PartnerOffersReview(
                     .fillMaxSize()
                     .padding(bottom = paddingValues.calculateBottomPadding()),
         )
-    }
-
-    LaunchedEffect(delay) {
-        if (delay) {
-            delay(5000L)
-            onNavigateToAssignGuideForm()
-        }
     }
 }

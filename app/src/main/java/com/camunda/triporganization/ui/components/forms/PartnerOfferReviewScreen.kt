@@ -1,5 +1,6 @@
 package com.camunda.triporganization.ui.components.forms
 
+import android.widget.Space
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -7,7 +8,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +52,7 @@ import com.camunda.triporganization.ui.theme.Colors.onSurface
 import com.camunda.triporganization.ui.theme.Colors.primary
 import com.camunda.triporganization.ui.theme.Colors.primaryContainer
 import com.camunda.triporganization.ui.theme.Colors.surface
+import kotlin.time.Duration.Companion.days
 
 @Composable
 fun PartnerOfferReviewScreen(
@@ -109,32 +110,18 @@ fun PartnerOfferReviewScreen(
                         text = "Transport offers",
                     )
 
-                    Row(
-                        modifier =
-                            Modifier
-                                .horizontalScroll(rememberScrollState()),
-                    ) {
-                        transportOffers.forEach { cityOffers ->
-                            Column(
-                                modifier =
-                                    Modifier
-                                        .padding(start = 16.dp, top = 8.dp)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(onPrimary)
-                                        .width(200.dp)
-                                        .padding(vertical = 4.dp, horizontal = 8.dp),
-                            ) {
-                                Text(
-                                    style = MaterialTheme.typography.labelLarge,
-                                    text =
-                                        if (trip?.transportation ==
-                                            TransportationType.BUS
-                                        ) {
-                                            "All cities"
-                                        } else {
-                                            ("to " + cityOffers.value.firstOrNull()?.cityName)
-                                        },
-                                )
+                    if (trip?.transportation == TransportationType.BUS) {
+                        Column(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(onPrimary)
+                                    .width(200.dp)
+                                    .padding(vertical = 4.dp, horizontal = 8.dp),
+                        ) {
+                            transportOffers.forEach { cityOffers ->
                                 cityOffers.value.forEachIndexed { i, offer ->
                                     Row(
                                         modifier =
@@ -163,7 +150,7 @@ fun PartnerOfferReviewScreen(
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text(
                                             style = MaterialTheme.typography.labelLarge,
-                                            text = offer.pricePerPerson.toString(),
+                                            text = offer.pricePerPerson.toString() + "€",
                                             color =
                                                 if (offer == transport) {
                                                     onPrimary
@@ -173,13 +160,70 @@ fun PartnerOfferReviewScreen(
                                         )
                                     }
                                     if (i != cityOffers.value.lastIndex) {
-                                        Box(
+                                        HorizontalDivider(modifier = Modifier.fillMaxWidth())
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            transportOffers.forEach { cityOffers ->
+                                Column(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(onPrimary)
+                                            .width(200.dp)
+                                            .padding(vertical = 4.dp, horizontal = 8.dp),
+                                ) {
+                                    Text(
+                                        style = MaterialTheme.typography.labelLarge,
+                                        text = "to " + cityOffers.value.firstOrNull()?.cityName,
+                                    )
+                                    cityOffers.value.forEachIndexed { i, offer ->
+                                        Row(
                                             modifier =
                                                 Modifier
                                                     .fillMaxWidth()
-                                                    .heightIn(1.dp)
-                                                    .background(Color.LightGray),
-                                        )
+                                                    .clickable {
+                                                        transport = offer
+                                                    }.background(
+                                                        if (offer == transport) {
+                                                            primary
+                                                        } else {
+                                                            onPrimary
+                                                        },
+                                                    ).padding(vertical = 8.dp, horizontal = 4.dp),
+                                        ) {
+                                            Text(
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                text = offer.partnerName,
+                                                color =
+                                                    if (offer == transport) {
+                                                        onPrimary
+                                                    } else {
+                                                        onSurface
+                                                    },
+                                            )
+                                            Spacer(modifier = Modifier.weight(1f))
+                                            Text(
+                                                style = MaterialTheme.typography.labelLarge,
+                                                text = offer.pricePerPerson.toString() + "€",
+                                                color =
+                                                    if (offer == transport) {
+                                                        onPrimary
+                                                    } else {
+                                                        onSurface
+                                                    },
+                                            )
+                                        }
+                                        if (i != cityOffers.value.lastIndex) {
+                                            HorizontalDivider(modifier = Modifier.fillMaxWidth())
+                                        }
                                     }
                                 }
                             }
@@ -201,16 +245,15 @@ fun PartnerOfferReviewScreen(
                         modifier = Modifier.padding(horizontal = 16.dp),
                     )
 
-                    Row(
-                        modifier =
-                            Modifier
-                                .horizontalScroll(rememberScrollState()),
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         accommodationOffers.forEach { cityOffers ->
                             Column(
                                 modifier =
                                     Modifier
-                                        .padding(start = 16.dp, top = 8.dp)
+                                        .fillMaxWidth()
+                                        .padding(start = 16.dp, top = 8.dp, end = 16.dp)
                                         .clip(RoundedCornerShape(8.dp))
                                         .background(onPrimary)
                                         .width(200.dp)
@@ -251,7 +294,7 @@ fun PartnerOfferReviewScreen(
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text(
                                             style = MaterialTheme.typography.labelLarge,
-                                            text = offer.pricePerPerson.toString(),
+                                            text = offer.pricePerPerson.toString() + "€",
                                             color =
                                                 if (offer == accommodation[cityOffers.key]) {
                                                     onPrimary
@@ -323,19 +366,28 @@ private fun PartnerOfferReviewScreenPreview() {
                             id = 1,
                             partnerId = 1,
                             processKey = 2,
-                            partnerName = "Hilton",
+                            partnerName = "Royal Victoria Hotel",
                             pricePerPerson = 500,
                             cityId = 2,
-                            cityName = "Paris",
+                            cityName = "Pisa",
                         ),
                         PartnerOfferItem(
                             id = 1,
                             partnerId = 1,
                             processKey = 2,
-                            partnerName = "Westin",
+                            partnerName = "AC Hotel Pisa",
                             pricePerPerson = 300,
                             cityId = 2,
-                            cityName = "Paris",
+                            cityName = "Pisa",
+                        ),
+                        PartnerOfferItem(
+                            id = 1,
+                            partnerId = 1,
+                            processKey = 2,
+                            partnerName = "Hotel La Pace",
+                            pricePerPerson = 220,
+                            cityId = 2,
+                            cityName = "Pisa",
                         ),
                     ),
                 2L to
@@ -344,28 +396,19 @@ private fun PartnerOfferReviewScreenPreview() {
                             id = 1,
                             partnerId = 1,
                             processKey = 2,
-                            partnerName = "Hilton",
-                            pricePerPerson = 300,
+                            partnerName = "Combo",
+                            pricePerPerson = 100,
                             cityId = 2,
-                            cityName = "Paris",
+                            cityName = "Milan",
                         ),
                         PartnerOfferItem(
                             id = 1,
                             partnerId = 1,
                             processKey = 2,
-                            partnerName = "Westin",
-                            pricePerPerson = 500,
+                            partnerName = "Sheraton",
+                            pricePerPerson = 250,
                             cityId = 2,
-                            cityName = "Paris",
-                        ),
-                        PartnerOfferItem(
-                            id = 1,
-                            partnerId = 1,
-                            processKey = 2,
-                            partnerName = "Drugi",
-                            pricePerPerson = 300,
-                            cityId = 2,
-                            cityName = "Paris",
+                            cityName = "Milan",
                         ),
                     ),
             ),
@@ -377,8 +420,8 @@ private fun PartnerOfferReviewScreenPreview() {
                             id = 1,
                             partnerId = 1,
                             processKey = 2,
-                            partnerName = "Prvi",
-                            pricePerPerson = 300,
+                            partnerName = "Flixbus",
+                            pricePerPerson = 70,
                             cityId = 2,
                             cityName = "Paris",
                         ),
@@ -386,8 +429,8 @@ private fun PartnerOfferReviewScreenPreview() {
                             id = 1,
                             partnerId = 1,
                             processKey = 2,
-                            partnerName = "Drugi",
-                            pricePerPerson = 300,
+                            partnerName = "Arriva",
+                            pricePerPerson = 100,
                             cityId = 2,
                             cityName = "Paris",
                         ),
@@ -399,13 +442,13 @@ private fun PartnerOfferReviewScreenPreview() {
         trip =
             Trip(
                 id = 1,
-                tripName = "test trip",
+                tripName = "Italian summer",
                 cities =
                     listOf(
                         CitiesData(
                             cityId = 1,
-                            cityName = "lala",
-                            daysSpent = 2,
+                            cityName = "Zagreb",
+                            daysSpent = 0,
                             order = 1,
                             plan = "",
                             includedActivities = emptyList(),
@@ -413,8 +456,26 @@ private fun PartnerOfferReviewScreenPreview() {
                         ),
                         CitiesData(
                             cityId = 1,
-                            cityName = "sd",
+                            cityName = "Pisa",
                             daysSpent = 2,
+                            order = 2,
+                            plan = "",
+                            includedActivities = emptyList(),
+                            extraActivities = emptyList(),
+                        ),
+                        CitiesData(
+                            cityId = 1,
+                            cityName = "Milan",
+                            daysSpent = 2,
+                            order = 2,
+                            plan = "",
+                            includedActivities = emptyList(),
+                            extraActivities = emptyList(),
+                        ),
+                        CitiesData(
+                            cityId = 1,
+                            cityName = "Zagreb",
+                            daysSpent = 0,
                             order = 2,
                             plan = "",
                             includedActivities = emptyList(),
@@ -423,9 +484,9 @@ private fun PartnerOfferReviewScreenPreview() {
                     ),
                 minTravelers = 10,
                 maxTravelers = 20,
-                transportation = TransportationType.PLANE,
+                transportation = TransportationType.BUS,
                 tripStartDate = System.currentTimeMillis(),
-                tripEndDate = System.currentTimeMillis(),
+                tripEndDate = System.currentTimeMillis().plus(4.days.inWholeMilliseconds),
                 price = null,
                 coordinatorId = AppSingleton.userId,
             ),

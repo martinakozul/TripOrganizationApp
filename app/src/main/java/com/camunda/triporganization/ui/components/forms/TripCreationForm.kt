@@ -15,9 +15,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
@@ -43,14 +44,19 @@ import androidx.compose.ui.unit.dp
 import com.camunda.triporganization.R
 import com.camunda.triporganization.helper.DateHelper
 import com.camunda.triporganization.model.CitiesData
+import com.camunda.triporganization.model.CityResponse
 import com.camunda.triporganization.model.TransportationType
 import com.camunda.triporganization.model.Trip
 import com.camunda.triporganization.ui.components.CustomButton
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.DateRangePickerModal
 import com.camunda.triporganization.ui.components.SubmitLoader
+import com.camunda.triporganization.ui.theme.AppTypography
 import com.camunda.triporganization.ui.theme.Colors.primaryContainer
+import com.camunda.triporganization.ui.theme.Colors.secondary
+import com.camunda.triporganization.ui.theme.Colors.surface
 import com.camunda.triporganization.viewmodel.TripWrapper
+import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -61,6 +67,7 @@ fun TripCreationForm(
     onCreateTrip: (Trip) -> Unit,
     onSaveChanges: (Trip) -> Unit,
     onBackPressed: () -> Unit,
+    onNavigateToAssignGuideForm: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val trip = tripWrapper?.trip
@@ -71,6 +78,7 @@ fun TripCreationForm(
 
     val cities = remember { mutableStateListOf<CitiesData>() }
 
+    var delay by remember { mutableStateOf(false) }
     var minTravelers by remember { mutableIntStateOf(trip?.minTravelers ?: 0) }
     var maxTravelers by remember { mutableIntStateOf(trip?.maxTravelers ?: 0) }
     var datePickerShown by remember { mutableStateOf(false) }
@@ -82,6 +90,13 @@ fun TripCreationForm(
     var showDaysInputDialog by remember { mutableStateOf<Int?>(null) }
     var tripLength by remember { mutableIntStateOf(0) }
 
+    LaunchedEffect(delay) {
+        if (delay) {
+            delay(5000L)
+            onNavigateToAssignGuideForm()
+        }
+    }
+
     Scaffold(
         topBar = {
             CustomTopBar(
@@ -91,7 +106,11 @@ fun TripCreationForm(
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding),
+            modifier =
+                Modifier
+                    .background(surface)
+                    .fillMaxSize()
+                    .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(
@@ -110,7 +129,9 @@ fun TripCreationForm(
                 )
 
                 Column(
-                    modifier = Modifier.padding(bottom = 12.dp),
+                    modifier =
+                        Modifier
+                            .padding(top = 8.dp, bottom = 12.dp),
                 ) {
                     Row(
                         modifier = Modifier.horizontalScroll(rememberScrollState()),
@@ -118,6 +139,7 @@ fun TripCreationForm(
                     ) {
                         cities.forEachIndexed { index, city ->
                             Text(
+                                style = AppTypography.labelLarge,
                                 text = city.cityName,
                                 modifier =
                                     Modifier.combinedClickable(
@@ -128,9 +150,13 @@ fun TripCreationForm(
                                         onLongClickLabel = "",
                                     ),
                             )
+                            Spacer(modifier.width(8.dp))
+
                             if (index != cities.lastIndex) {
-                                Text("- ")
+                                Text("-")
                             }
+
+                            Spacer(modifier.width(8.dp))
                         }
                         CustomDropdownMenu(
                             label = "Add city",
@@ -150,7 +176,8 @@ fun TripCreationForm(
                         )
                     }
                     Text(
-                        style = MaterialTheme.typography.labelMedium,
+                        color = secondary,
+                        style = AppTypography.labelMedium,
                         text =
                             "Minimum days to fill: " +
                                 if (tripDate == null) {
@@ -196,7 +223,7 @@ fun TripCreationForm(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = AppTypography.labelLarge,
                         text =
                             if (tripDate != null) {
                                 "${DateHelper.convertMillisToDate(tripDate!!.first)} - ${
@@ -208,7 +235,8 @@ fun TripCreationForm(
                     )
 
                     Text(
-                        style = MaterialTheme.typography.labelMedium,
+                        color = secondary,
+                        style = AppTypography.labelMedium,
                         text = "Minimum trip length: ${cities.sumOf { it.daysSpent }} days",
                     )
                 }
@@ -223,7 +251,7 @@ fun TripCreationForm(
 
                 Column {
                     Text(
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = AppTypography.labelLarge,
                         text = "Pick transportation type:",
                     )
 
@@ -269,6 +297,7 @@ fun TripCreationForm(
                 text = "Create trip",
                 enabled = createEnabled,
                 onClick = {
+                    delay = true
                     onCreateTrip(
                         Trip(
                             id = tripId,
@@ -341,11 +370,18 @@ private fun TripCreationFormPreview() {
         tripWrapper =
             TripWrapper(
                 null,
-                listOf(),
+                listOf(
+                    CityResponse(1L, "Zagreb"),
+                    CityResponse(2L, "Milan"),
+                    CityResponse(3L, "Rome"),
+                    CityResponse(4L, "Madrid"),
+                    CityResponse(5L, "London"),
+                ),
             ),
         tripId = 1,
         onCreateTrip = {},
         onSaveChanges = {},
         onBackPressed = {},
+        onNavigateToAssignGuideForm = {},
     )
 }

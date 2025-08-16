@@ -9,6 +9,8 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -46,7 +48,11 @@ fun AssignGuideScreen(
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(surface)
+                    .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CustomDropdownMenu(
@@ -92,7 +98,7 @@ fun AssignGuideScreen(
 @Composable
 private fun AssignGuideScreenPreview() {
     AssignGuideScreen(
-        guideList = listOf("Ana", "Petar", "Marin"),
+        guideList = listOf("Guide 1", "Guide 2", "Guide 3"),
         assignGuide = {},
         onBackPressed = {},
     )

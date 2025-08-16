@@ -77,16 +77,19 @@ fun TripOrganizationScreen() {
 
         composable(NavigationScreen.TripCreationForm.route + "/{tripId}") { backStackEntry ->
             val tripId = backStackEntry.arguments?.getString("tripId")?.toLong() ?: 0L
-            TripCreationForm(onBackPressed = { navController.navigateUp() }, tripId = tripId)
+            TripCreationForm(
+                onNavigateToAssignGuideForm = {
+                    navController.navigate(NavigationScreen.AssignGuideForm.route + "/$tripId")
+                },
+                onBackPressed = { navController.navigateUp() },
+                tripId = tripId,
+            )
         }
 
         composable(NavigationScreen.PartnerOffersReview.route + "/{tripId}") { backStackEntry ->
             val tripId = backStackEntry.arguments?.getString("tripId")?.toLong() ?: 0L
             PartnerOffersReview(
                 tripId = tripId,
-                onNavigateToAssignGuideForm = {
-                    navController.navigate(NavigationScreen.AssignGuideForm.route + "/$tripId")
-                },
                 onBackPressed = { navController.navigateUp() },
             )
         }

@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.camunda.triporganization.R
@@ -44,7 +45,10 @@ import com.camunda.triporganization.model.Trip
 import com.camunda.triporganization.ui.components.CustomButton
 import com.camunda.triporganization.ui.components.CustomTopBar
 import com.camunda.triporganization.ui.components.SubmitLoader
+import com.camunda.triporganization.ui.components.TripInformationCollapsible
+import com.camunda.triporganization.ui.theme.AppTypography
 import com.camunda.triporganization.ui.theme.Colors.primaryContainer
+import com.camunda.triporganization.ui.theme.Colors.surface
 
 @Composable
 fun TripPlanForm(
@@ -56,7 +60,7 @@ fun TripPlanForm(
     if (trip == null) return
 
     val cities = trip.cities.sortedBy { it.order }
-
+    var activities by remember { mutableStateOf<Map<Long, List<TripActivity>>>(mutableMapOf()) }
     var tripPlan by remember {
         mutableStateOf(
             cities.map { item ->
@@ -68,14 +72,9 @@ fun TripPlanForm(
     }
     var showLoader by remember { mutableStateOf(false) }
 
-    var includedActivities by remember { mutableStateOf<List<TripActivity>>(listOf()) }
-    var extraActivities by remember { mutableStateOf<List<TripActivity>>(listOf()) }
-
-    var showAddActivity by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
-            CustomTopBar(title = "Assign a guide", onBackPressed = onBackPressed)
+            CustomTopBar(title = "Define trip itinerary", onBackPressed = onBackPressed)
         },
     ) { innerPadding ->
         Column(
@@ -84,6 +83,9 @@ fun TripPlanForm(
                     .padding(innerPadding)
                     .fillMaxSize(),
         ) {
+
+            TripInformationCollapsible(trip, modifier.background(surface).padding(bottom = 16.dp))
+
             LazyColumn(
                 modifier =
                     Modifier
@@ -97,8 +99,16 @@ fun TripPlanForm(
                 items(cities) { city ->
 
                     Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = city.cityName + " (${city.daysSpent} nights)",
+                        style = AppTypography.labelLarge,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp),
+                        text = city.cityName + "  (" + pluralStringResource(
+                            id = R.plurals.nights,
+                            count = (city.daysSpent - 1).coerceAtLeast(0),
+                            (city.daysSpent - 1).coerceAtLeast(0)
+                        ) + ")",
                     )
 
                     repeat(city.daysSpent.coerceAtLeast(1)) { i ->
@@ -121,106 +131,19 @@ fun TripPlanForm(
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
-                }
 
-                item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable { showAddActivity = true },
-                    ) {
-                        Text(text = "Add activity")
-                        Icon(
-                            modifier =
-                                Modifier
-                                    .padding(start = 4.dp)
-                                    .size(16.dp),
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null,
-                        )
-                    }
-                }
-
-                item {
-                    Text(modifier = Modifier.fillMaxWidth(), text = "Included activities:")
-                }
-
-                items(includedActivities) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(text = it.name + "€${it.price}")
-                        Icon(
-                            modifier =
-                                Modifier
-                                    .padding(start = 4.dp)
-                                    .size(16.dp),
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = null,
-                        )
-                        Icon(
-                            modifier =
-                                Modifier
-                                    .padding(start = 4.dp)
-                                    .size(16.dp),
-                            imageVector = Icons.Default.Create,
-                            contentDescription = null,
-                        )
-                    }
-                }
-
-                item {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Extra activities:",
+                    ActivityInput(
+                        activities = activities.getOrElse(city.cityId, { emptyList() }),
+                        addActivity = { activity ->
+                            val mutableActivities = activities.toMutableMap()
+                            val mutableCityActivities = activities.getOrElse(
+                                city.cityId,
+                                { emptyList() }).toMutableList()
+                            mutableCityActivities.add(activity)
+                            mutableActivities[city.cityId] = mutableCityActivities
+                            activities = mutableActivities
+                        }
                     )
-                }
-
-                items(extraActivities) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(text = it.name + "€${it.price}")
-                        Icon(
-                            modifier =
-                                Modifier
-                                    .padding(start = 4.dp)
-                                    .size(16.dp),
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = null,
-                        )
-                        Icon(
-                            modifier =
-                                Modifier
-                                    .padding(start = 4.dp)
-                                    .size(16.dp),
-                            imageVector = Icons.Default.Create,
-                            contentDescription = null,
-                        )
-                    }
-                }
-
-                item {
-                    if (showAddActivity) {
-                        AddActivityDialog(
-                            tripActivity = null,
-                            onActivityCreated = { activity ->
-                                if (activity.isIncluded) {
-                                    includedActivities = includedActivities + activity
-                                } else {
-                                    extraActivities = extraActivities + activity
-                                }
-                                showAddActivity = false
-                            },
-                            onDismiss = {
-                                showAddActivity = false
-                            },
-                        )
-                    }
                 }
 
                 item {
@@ -231,6 +154,7 @@ fun TripPlanForm(
             }
 
             CustomButton(
+                enabled = false,
                 text = "Submit itinerary",
                 onClick = {
                     showLoader = true
@@ -238,8 +162,8 @@ fun TripPlanForm(
                         cities.map { city ->
                             city.copy(
                                 plan = tripPlan[city.order - 1].joinToString(";"),
-                                includedActivities = includedActivities.map { "${it.name} (€${it.price})" },
-                                extraActivities = extraActivities.map { "${it.name} (€${it.price})" },
+                                includedActivities = activities.getOrElse(city.cityId, {emptyList()}).filter { it.isIncluded }.map { "${it.name} (€${it.price})" },
+                                extraActivities = activities.getOrElse(city.cityId, {emptyList()}).filter { it.isIncluded.not() }.map { "${it.name} (€${it.price})" },
                             )
                         },
                     )
@@ -260,6 +184,106 @@ fun TripPlanForm(
     }
 }
 
+@Composable
+private fun ActivityInput(
+    activities: List<TripActivity>,
+    addActivity: (TripActivity) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showAddActivity by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier.padding(top = 8.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable { showAddActivity = true },
+        ) {
+            Text(
+                style = AppTypography.labelLarge,
+                text = "Add activity",
+            )
+            Icon(
+                modifier =
+                    Modifier
+                        .padding(start = 4.dp)
+                        .size(16.dp),
+                imageVector = Icons.Default.Add,
+                contentDescription = null,
+            )
+        }
+
+        Text(
+            style = AppTypography.labelLarge,
+            modifier = Modifier.fillMaxWidth(),
+            text = "Included activities:",
+        )
+
+        if (showAddActivity) {
+            AddActivityDialog(
+                tripActivity = null,
+                onActivityCreated = { activity ->
+                    addActivity(activity)
+                    showAddActivity = false
+                },
+                onDismiss = {
+                    showAddActivity = false
+                },
+            )
+        }
+    }
+
+    activities.filter { it.isIncluded }.forEach {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(text = it.name + "€${it.price}")
+            Icon(
+                modifier =
+                    Modifier
+                        .padding(start = 4.dp)
+                        .size(16.dp),
+                imageVector = Icons.Default.Clear,
+                contentDescription = null,
+            )
+        }
+    }
+
+    Text(
+        style = AppTypography.labelLarge,
+        modifier = Modifier.fillMaxWidth(),
+        text = "Extra activities:",
+    )
+
+
+    activities.filter { it.isIncluded.not() }.forEach {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(text = it.name + "  €${it.price}")
+            Icon(
+                modifier =
+                    Modifier
+                        .padding(start = 4.dp)
+                        .size(16.dp),
+                imageVector = Icons.Default.Clear,
+                contentDescription = null,
+            )
+            Icon(
+                modifier =
+                    Modifier
+                        .padding(start = 4.dp)
+                        .size(16.dp),
+                imageVector = Icons.Default.Create,
+                contentDescription = null,
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun TripPlanFormPreview() {
@@ -272,15 +296,15 @@ private fun TripPlanFormPreview() {
                     listOf(
                         CitiesData(
                             cityId = 5,
-                            cityName = "Barcelona",
-                            daysSpent = 2,
-                            order = 2,
+                            cityName = "Zagreb",
+                            daysSpent = 0,
+                            order = 1,
                         ),
                         CitiesData(
                             cityId = 4,
-                            cityName = "Paris",
+                            cityName = "Milan",
                             daysSpent = 2,
-                            order = 1,
+                            order = 2,
                         ),
                         CitiesData(
                             cityId = 7,

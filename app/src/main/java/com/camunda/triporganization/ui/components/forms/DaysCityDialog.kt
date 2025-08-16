@@ -15,6 +15,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import com.camunda.triporganization.ui.theme.Colors.onSurface
+import com.camunda.triporganization.ui.theme.Colors.primary
+import com.camunda.triporganization.ui.theme.Colors.secondary
+import com.camunda.triporganization.ui.theme.Colors.surface
 
 @Composable
 fun DaysCityDialog(
@@ -25,6 +29,9 @@ fun DaysCityDialog(
     var daysInCity by remember { mutableStateOf("") }
 
     AlertDialog(
+        containerColor = surface,
+        titleContentColor = onSurface,
+        textContentColor = onSurface,
         onDismissRequest = { onDismiss() },
         title = { Text("How many days in $cityName?") },
         text = {
@@ -48,12 +55,18 @@ fun DaysCityDialog(
                     onDaysEntered(days)
                 }
             }) {
-                Text("Save")
+                Text(
+                    color = primary,
+                    text = "SAVE",
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(
+                    color = secondary,
+                    text = "DISMISS",
+                )
             }
         },
     )
@@ -63,7 +76,7 @@ fun DaysCityDialog(
 @Composable
 private fun DaysCityDialogPreview() {
     DaysCityDialog(
-        cityName = "Ljubljana",
+        cityName = "London",
         onDaysEntered = {},
         onDismiss = {},
     )
